@@ -1,0 +1,235 @@
+﻿@using BitakShop.Core.Models
+@using BitakShop.Infrastructure.Helpers;
+@model BitakShop.Core.Models.ProductGroup
+
+@{
+    ViewBag.Title = "دسته بندی محصولات";
+    var Features = ViewBag.Features as List<Feature>;
+    var Brands = ViewBag.Brands as List<Brand>;
+    var ProductGroups = ViewBag.ProductGroups as List<ProductGroup>;
+}
+<link href="/Content/admin/plugins/custom/jstree/jstree.bundle.css" rel="stylesheet" type="text/css" />
+<input type="hidden" id="nav_active" value="product_control">
+<input type="hidden" id="nav_item_active" value="product_groups">
+@{
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">
+            <strong>خطا!</strong> @ViewBag.Message
+        </div>
+    }
+}
+<div class="col-lg-12">
+    <div class="card card-custom gutter-b">
+        <div class="card-header">
+            <h3 class="card-title">
+                افزودن گروه
+            </h3>
+        </div>
+        @using (Html.BeginForm("Create", "ProductGroups", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+        {
+
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, new { })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control " } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "form-text text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-label">تصویر</label>
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <div class="image-input image-input-outline" id="productGroup-image">
+                                    <div class="image-input-wrapper" style="background-image: url(assets/media/users/100_1.jpg)"></div>
+
+                                    <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="آپلود تصویر">
+                                        <i class="fa fa-pen icon-sm text-muted"></i>
+                                        <input type="file" name="ProductGroupImage" id="ProductGroupImage" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="productGroup_image_remove" />
+                                    </label>
+
+                                    <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="حذف تصویر">
+                                        <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="">برند ها</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2" id="Brands" name="Brands" multiple="multiple">
+                                    @foreach (var brand in Brands)
+                                    {
+                                        <option value="@brand.Id">@brand.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <span class="text-danger" style="display: none" id="validate_brand">لطفا حداقل یک برند را انتخاب کنید</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="">انتخاب گروه</label>
+                            <div class="col-lg-4 col-md-9 col-sm-12">
+                                <div id="ParentGroupId" class="tree-demo">
+                                    <ul>
+                                        <li data-jstree='{ "selected" : true }' id="pg_0">گروه اصلی</li>
+                                        @foreach (var group in ProductGroups.Where(p => p.ParentId == null))
+                                        {
+                                            var result = HierarchyLoop.GetProductGroupHierarchy(group);
+                                            @Html.Raw(result)
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>ویژگی های گروه</label>
+                            <select id="ProductGroupFeatures" name="ProductGroupFeatures" class="dual-listbox" multiple
+                                    data-available-title="ویژگی های موجود"
+                                    data-selected-title="ویژگی های انتخاب شده"
+                                    data-add="<i class='flaticon2-back'></i>"
+                                    data-remove="<i class='flaticon2-next'></i>"
+                                    data-add-all="<i class='flaticon2-fast-back'></i>"
+                                    data-remove-all="<i class='flaticon2-fast-next'></i>">
+                                @foreach (var feature in Features)
+                                {
+                                    <option value="@feature.Id">@feature.Title</option>
+                                }
+                            </select>
+                            <div class="checkbox-list col-lg-12">
+                                <div class="row">
+                                    <span class="text-danger" style="display: none" id="validate_feature">لطفا حداقل یک ویژگی را انتخاب کنید</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">انصراف</a>
+                <input type="submit" value="ثبت" class="btn btn-primary mr-2" />
+            </div>
+        }
+    </div>
+</div>
+<style>
+    .image-input .image-input-wrapper {
+        width: 200px;
+    }
+</style>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Content/admin/plugins/custom/jstree/jstree.bundle.js"></script>
+    <script src="/Content/admin/js/pages/features/miscellaneous/treeview.js"></script>
+    <!--end::Page Scripts-->
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="/ckeditor/adapters/jquery.js"></script>
+    <script>
+
+        $('#Brands').select2({
+            placeholder: "برند های این دسته را انتخاب کنید",
+        });
+        $("#ParentGroupId").jstree({
+            "core": {
+                "themes": {
+                    "responsive": false
+                }
+            },
+            "types": {
+                "default": {
+                    "icon": "fa fa-box"
+                }
+            },
+            "plugins": ["types"]
+        });
+        new KTImageInput('productGroup-image');
+    </script>
+    <script>
+        var listBox = $("#ProductGroupFeatures");
+        // get titles
+        var availableTitle = (listBox.attr("data-available-title") != null) ? listBox.attr("data-available-title") : "ویژگی های موجود";
+        var selectedTitle = (listBox.attr("data-selected-title") != null) ? listBox.attr("data-selected-title") : "ویژگی های انتخاب شده";
+
+        // get button labels
+        var addLabel = (listBox.attr("data-add") != null) ? listBox.attr("data-add") : "افزودن";
+        var removeLabel = (listBox.attr("data-remove") != null) ? listBox.attr("data-remove") : "حذف";
+        var addAllLabel = (listBox.attr("data-add-all") != null) ? listBox.attr("data-add-all") : "افزودن همه";
+        var removeAllLabel = (listBox.attr("data-remove-all") != null) ? listBox.attr("data-remove-all") : "حذف همه";
+        var box = new DualListbox(listBox.get(0), {
+            availableTitle: availableTitle,
+            selectedTitle: selectedTitle,
+            addButtonText: addLabel,
+            removeButtonText: removeLabel,
+            addAllButtonText: addAllLabel,
+            removeAllButtonText: removeAllLabel,
+        });
+    </script>
+    <script>
+        $("#form").submit(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                var Title = $("#Title").val();
+                var BrandIds = [];
+                $('#Brands').select2('data').map(function (i) { BrandIds.push(parseInt(i.id)) });
+                var ParentGroupId = 0;
+                var selectedGroup = $("#ParentGroupId").jstree().get_selected()[0]; // ["pg_id"]
+                if (selectedGroup != null || selectedGroup != undefined) {
+                    var selectedGroupArr = selectedGroup.split('_'); // ["pg","id"]
+                    var ParentGroupId = parseInt(selectedGroupArr[1]); // id
+                }
+                var ProductGroupFeatureIds = [];
+                box.selected.map(function (item) {
+                    ProductGroupFeatureIds.push(parseInt($(item).data("id")));
+                });
+                $("#validate_brand").hide();
+                $("#validate_brand").hide();
+                if (BrandIds.length <= 0 || ProductGroupFeatureIds.length <= 0) {
+                    if (BrandIds.length <= 0) {
+                        $("#validate_brand").show();
+                    }
+                    if (ProductGroupFeatureIds.length <= 0) {
+                        $("#validate_feature").show();
+                    }
+                }
+                else {
+                    $("#validate_brand").hide();
+                    $("#validate_feature").hide();
+                    var ProductGroupImage = $('#ProductGroupImage').get(0).files[0];
+                    var productGroup = {
+                        Title: Title,
+                        BrandIds: BrandIds,
+                        ParentGroupId: ParentGroupId,
+                        ProductGroupFeatureIds: ProductGroupFeatureIds
+                    }
+                    console.log(productGroup);
+                    $.post($("#form").attr('action'),
+                        productGroup,
+                        function (id) {
+                            var formData = new FormData();
+                            formData.append('File', ProductGroupImage);
+                            $.ajax({
+                                type: 'POST',
+                                url: "/ProductGroups/UploadImage/" + id,
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    console.log("success");
+                                    location.href = "/Admin/ProductGroups";
+                                },
+                                error: function (data) {
+                                    console.log("error");
+                                    console.log(data);  
+                                }
+                            });
+                        });
+                };
+            }
+        });
+    </script>
+}

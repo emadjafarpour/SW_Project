@@ -1,0 +1,87 @@
+﻿
+@model List<BitakShop.Core.Models.StaticContentDetail>
+
+<!-- Main Slider-->
+<section class="slice-thubm-slider mb-2" style="width:100%;max-width:900px;height:300px;">
+    <div class="demo-cont soft-shadow rounded-5">
+        <!-- slider start -->
+        <div class="fnc-slider example-slider">
+            <div class="fnc-slider__slides">
+
+                @{
+                    int index = 0;
+                }
+
+                @foreach (var item in Model.Where(m => m.Image != null))
+                {
+                    index++;
+                    var cssClass = "";
+                    if (index == 1)
+                    {
+                        cssClass = "m--active-slide";
+                    }
+                    if (index > 5)
+                    {
+                        break;
+                    }
+                    <!-- slide start -->
+                    <div class="fnc-slide m--blend-dark @cssClass">
+                        <div class="fnc-slide__inner" style="background-image: url('/Files/StaticContentImages/Image/@item.Image')">
+
+                            <a href="@item.Link">
+                                <div class="fnc-slide__content">
+                                    <h2 class="fnc-slide__heading">
+                                        <div class="fnc-slide__heading-line">
+                                            <span>@item.Title</span>
+                                        </div>
+                                        <div class="fnc-slide__heading-line">
+                                            <span style="font-size:14px">@item.ShortDescription </span>
+                                        </div>
+                                    </h2>
+
+                                </div>
+                            </a>
+
+                        </div>
+                    </div>
+                    <!-- slide end -->
+                }
+
+
+            </div>
+            <nav class="fnc-nav">
+                <div class="fnc-nav__bgs">
+                    @{ index = 0;}
+                    @foreach (var item in Model.Where(m => m.Image != null))
+                    {
+                        index++;
+                        var cssClass = "";
+                        if (index == 1)
+                        {
+                            cssClass = "m--active-nav-bg";
+                        }
+
+                        <div class="fnc-nav__bg m--navbg-green @cssClass"></div>
+                    }
+                </div>
+                <div class="fnc-nav__controls">
+                    @{ index = 0;}
+                    @foreach (var item in Model.Where(m => m.Image != null))
+                    {
+                        index++;
+                        if (index > 5)
+                        {
+                            break;
+                        }
+                        <button class="fnc-nav__control">
+                            @item.Title
+                            <span class="fnc-nav__control-progress"></span>
+                        </button>
+                    }
+                </div>
+            </nav>
+        </div>
+        <!-- slider end -->
+    </div>
+</section>
+

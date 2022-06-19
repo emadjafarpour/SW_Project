@@ -1,0 +1,12 @@
+﻿@model List<BitakShop.Core.Models.ArticleCategory>
+
+<!-- Widget Categories-->
+<section class="widget widget-categories widget-border bg-white mb-2">
+    <h3 class="widget-title">دسته بندی وبلاگ</h3>
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li><a href="/Blog?category=@item.Id">@item.Title</a><span></span></li>
+        }
+    </ul>
+</section>

@@ -1,0 +1,230 @@
+﻿@using BitakShop.Core.Utility;
+@using BitakShop.Core.Models;
+
+@model List<BitakShop.Core.Models.Discount>
+
+@{ ViewBag.Title = "خانه"; }
+
+<!-- Main Content-->
+<section class="container pt-2 mb-3">
+    <div class="row pt-2" style="background:none;">
+        @{ var headerBanner = Model.FirstOrDefault(d => d.DiscountLocationType == DiscountLocationType.Header);
+            if (headerBanner != null)
+            {
+<div class="col-md-12 hidden-xs-down hidden-sm-down">
+    <div class="alert alert-no-padding alert-image-bg alert-dismissible fade show text-center mb-2" style="background-image: url();">
+        <span class="alert-close text-white" data-dismiss="alert"></span>
+        <a href="/Shop/Discounts/@headerBanner.GroupIdentifier/"><img src="~/Files/DiscountImages/Image/@headerBanner.Image"></a>
+    </div>
+</div> } }
+        <div class="col-lg-9 col-md-9 col-sm-8 order-lg-2 mb-2" style="padding-right:7px">
+
+
+            @Html.Action("SliderSection", "Home")
+
+            <!-- Special Product Big Banner -->
+            @Html.Action("SpecialOffer", "Home")
+
+            <!--Top Category-->
+            @Html.Action("ProductCategoriesSection", "Home")
+
+
+            @{ var body1Banner = Model.FirstOrDefault(d => d.DiscountLocationType == DiscountLocationType.Body1);
+                if (body1Banner != null)
+                { <!--Banner Promo-->
+                                    <section class="alert alert-image-bg alert-dismissible fade show text-center mb-2" style="background-image: url(/Files/DiscountImages/Image/@body1Banner.Image);">
+                                        <span class="alert-close text-white" data-dismiss="alert"></span>
+                                        <div class="h4 text-medium text-white padding-top-1x padding-bottom-1x bg-shadow">
+                                            <i class="icon-clock" style="font-size: 33px; margin-top: -5px;"></i> @body1Banner.Title
+                                            <div class="mt-3 hidden-xl-up"></div><a class="btn btn-primary" href="/Shop/Discounts/@body1Banner.GroupIdentifier/">نمایش حراجی</a>
+                                        </div>
+                                    </section> } }
+
+            <!-- Featured Products Carousel-->
+            <!-- Product Section Start -->
+            @Html.Action("TopSoldProductsSection", "Home", new { take = 8 })
+            <!-- Product Section End -->
+
+
+            @{ var body2Banner = Model.FirstOrDefault(d => d.DiscountLocationType == DiscountLocationType.Body2);
+                if (body2Banner != null)
+                { <!--Banner Promo-->
+                                    <section class="alert alert-image-bg alert-dismissible fade show text-center mb-2" style="background-image: url(/Files/DiscountImages/Image/@body2Banner.Image);">
+                                        <span class="alert-close text-white" data-dismiss="alert"></span>
+                                        <div class="h4 text-medium text-white padding-top-1x padding-bottom-1x bg-shadow">
+                                            <i class="icon-clock" style="font-size: 33px; margin-top: -5px;"></i> @body2Banner.Title
+                                            <div class="mt-3 hidden-xl-up"></div><a class="btn btn-primary" href="/Shop/Discounts/@body2Banner.GroupIdentifier/">نمایش حراجی</a>
+                                        </div>
+                                    </section> } }
+
+            <!-- Featured Products Carousel-->
+            <!-- Product Section Start -->
+            @Html.Action("LatestProductsSection", "Home", new { take = 8, viewType = "body" })
+            <!-- Product Section End -->
+
+
+
+        </div><!--end Inner content-->
+        <!---------------------
+                Sidebar
+        ---------------------->
+        <aside class="col-md-3 col-sm-4 order-lg-1" style="padding-left:7px">
+
+            @if (ViewBag.SidebarImages != null)
+            {
+                if (!string.IsNullOrEmpty(ViewBag.SidebarImages[0].Image))
+                {
+<section class="alert alert-no-padding alert-image-bg alert-dismissible fade show text-center mb-2 soft-shadow" data-dismiss="alert">
+    <span></span>
+    <img src="~/Files/StaticContentImages/Image/@ViewBag.SidebarImages[0].Image" />
+</section>      }
+
+}
+
+
+            @if (ViewBag.SidebarImages != null)
+            {
+                if (!string.IsNullOrEmpty(ViewBag.SidebarImages[1].Image))
+                {
+<section class="alert alert-no-padding alert-image-bg alert-dismissible fade show text-center mb-2 soft-shadow" data-dismiss="alert">
+    <span></span>
+    <img src="~/Files/StaticContentImages/Image/@ViewBag.SidebarImages[1].Image" />
+</section>      }
+
+}
+
+
+            @{ var sidebarBanner = Model.FirstOrDefault(d => d.DiscountLocationType == DiscountLocationType.Sidebar);
+                if (sidebarBanner != null)
+                {
+    <section class="alert alert-image-bg alert-dismissible fade show text-center mb-2 soft-shadow" style="background-image: url(/Files/DiscountImages/Image/@sidebarBanner.Image);">
+        <span class="alert-close text-white" data-dismiss="alert"></span>
+        <div class="h5 text-medium padding-top-1x padding-bottom-1x bg-shadow" style="color:#000">
+            <i class="icon-clock" style="font-size: 25px; margin-top: -5px;"></i> @sidebarBanner.Title
+            <div class="mt-3 hidden-xl-up"></div><a class="btn btn-primary" href="/Shop/Discounts/@sidebarBanner.GroupIdentifier/">نمایش حراجی</a>
+        </div>
+    </section> } }
+
+
+            <!-- Latest Articles Side Section Start -->
+            @Html.Action("LatestArticlesSideSection", "Home", new { take = 12 })
+            <!-- Latest Articles Side Section End -->
+
+
+
+
+            @if (ViewBag.SidebarImages != null)
+            {
+                if (!string.IsNullOrEmpty(ViewBag.SidebarImages[2].Image))
+                {
+<section class="alert alert-no-padding alert-image-bg alert-dismissible fade show text-center mb-2 soft-shadow" data-dismiss="alert">
+    <span></span>
+    <img src="~/Files/StaticContentImages/Image/@ViewBag.SidebarImages[2].Image" />
+</section>      }
+
+}
+
+
+            <!-- Latest Product Section Start -->
+            @Html.Action("LatestProductsSection", "Home", new { take = 8 })
+            <!-- Latest Product Section End -->
+        </aside>
+
+    </div><!--End Container Row-->
+</section><!-- container -->
+<!-- Promo #2-->
+
+@if (ViewBag.CollectionBanner != null && ViewBag.CollectionBanner.Count > 0)
+{
+<section class="container mb-3">
+    <div class="row pt-2 pb-2" style="background:#f0eff1">
+        <div class="col-xl-12 col-lg-12">
+
+            <a href="@ViewBag.CollectionBanner[0].Link" class="collection-a">
+                <div class="fw-section rounded padding-top-4x padding-bottom-4x" style="background-image: url(/Files/StaticContentImages/Image/@ViewBag.CollectionBanner[0].Image);">
+                    <span class="overlay rounded" style="opacity: .35;"></span>
+                    <div class="text-center">
+                        <h3 class="display-4 text-normal text-white text-shadow mb-3">@ViewBag.CollectionBanner[0].ShortDescription</h3>
+                        <h2 class="display-2 text-bold text-white text-shadow">@ViewBag.CollectionBanner[0].Title</h2>
+                        <h4 class="d-inline-block h2 text-normal text-white text-shadow border-default border-left-0 border-right-0 mb-4">@Html.Raw(ViewBag.CollectionBanner[0].Description)</h4>
+                        <br>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>}
+
+
+
+
+<!-- Brand logo section strat -->
+@Html.Action("PartnersSection", "Home")
+<!-- Brand logo section end -->
+
+
+<section class="container padding-top-2x padding-bottom-2x">
+    <div class="row">
+        <div class="col-md-3 col-sm-6 text-center mb-30">
+            <img class="d-block w-90 img-thumbnail rounded-circle mx-auto mb-3" src="~/Content/client/images/services/garanti-e.png" alt="Shipping">
+            <h6>بازگشت بی قید و شرط محصول</h6>
+            <p class="text-muted margin-bottom-none font-small">برگشت کالا در صورت نارضایتی مشتری</p>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center mb-30">
+            <img class="d-block w-90 img-thumbnail rounded-circle mx-auto mb-3" src="~/Content/client/images/services/pay-e.png" alt="Money Back">
+            <h6>پرداخت امن</h6>
+            <p class="text-muted margin-bottom-none font-small">با استفاده از درگاه های عضو شبکه شتاب، امن پرداخت کنید</p>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center mb-30">
+            <img class="d-block w-90 img-thumbnail rounded-circle mx-auto mb-3" src="~/Content/client/images/services/express-e.png" alt="Support">
+            <h6>حمل رایگان و سریع سفارش</h6>
+            <p class="text-muted margin-bottom-none font-small">سفارش خود را بسرعت تحویل بگیرید</p>
+        </div>
+        <div class="col-md-3 col-sm-6 text-center mb-30">
+            <img class="d-block w-90 img-thumbnail rounded-circle mx-auto mb-3" src="~/Content/client/images/services/orginal-e.png" alt="Payment">
+            <h6>ضمانت اصل بودن محصول</h6>
+            <p class="text-muted margin-bottom-none font-small">مطمن باشید کالایی اصل و با کیفیت خواهید داشت</p>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        // Set the date we're counting down to
+        var time = $("#time").html();
+        var countDownDate = new Date(time).getTime();
+
+        // Update the count down every 1 second
+        var x = setInterval(function () {
+
+            // Get today's date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            //document.getElementById("day").innerHTML = days;
+            //document.getElementById("hour").innerHTML = hours;
+            //document.getElementById("minute").innerHTML = minutes;
+            //document.getElementById("second").innerHTML = seconds;
+
+            //console.log(time);
+            //console.log(days);
+            //console.log(hours);
+            //console.log(minutes);
+
+            // If the count down is over, write some text
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("Full").innerHTML = "زمان منقضی شده است";
+            }
+        }, 1000);</script>
+}

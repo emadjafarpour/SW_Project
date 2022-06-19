@@ -1,0 +1,986 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>BitakShop | @ViewData["Title"]</title>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link type="image/x-icon" href="~/Content/client/images/fav-icon.png" rel="icon">
+    <!-- CSS -->
+    <link rel="stylesheet" media="screen" href="~/Content/client/css/vendor.min.css">
+    <!-- Main Template Styles-->
+    <link id="mainStyles" rel="stylesheet" media="screen" href="~/Content/client/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet' href='https://k1ngzed.com/dist/swiper/swiper.min.css'>
+    <link rel='stylesheet' href='https://k1ngzed.com/dist/EasyZoom/easyzoom.css'>
+    <link rel="stylesheet" href="~/Content/client/css/shop-image.css">
+    <link id="mainStyles" rel="stylesheet" media="screen" href="~/Content/client/css/rtl.css">
+    <link rel="stylesheet" href="~/Content/client/css/fancy-slider/style.css">
+    <link rel="stylesheet" href="~/Content/Vendors/toastr/toastr.min.css" />
+
+
+    <script src="~/Content/client/js/modernizr.min.js"></script>
+</head>
+<!-- Body-->
+<body>
+
+    @Html.Action("HeaderSection", "Home", new { area = "" })
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        @RenderBody()
+
+        <!-- Footer section start -->
+        @Html.Action("FooterSection", "Home", new { area = "" })
+        <!-- Footer section end -->
+
+    </div>
+    <!-- Back To Top Button--><a class="scroll-to-top-btn" href="#"><i class="icon-arrow-up"></i></a>
+    <!-- Backdrop-->
+    <div class="site-backdrop"></div>
+
+
+    <style>
+        .loading {
+            position: fixed;
+            z-index: 999999999;
+            height: 2em;
+            width: 2em;
+            overflow: visible;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+            /* Transparent Overlay */
+            .loading:before {
+                content: '';
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.3);
+            }
+
+            /* :not(:required) hides these rules from IE9 and below */
+            .loading:not(:required) {
+                /* hide "loading..." text */
+                font: 0/0 a;
+                color: transparent;
+                text-shadow: none;
+                background-color: transparent;
+                border: 0;
+            }
+
+                .loading:not(:required):after {
+                    content: '';
+                    display: block;
+                    font-size: 10px;
+                    width: 1em;
+                    height: 1em;
+                    margin-top: -0.5em;
+                    -webkit-animation: spinner 1500ms infinite linear;
+                    -moz-animation: spinner 1500ms infinite linear;
+                    -o-animation: spinner 1500ms infinite linear;
+                    animation: spinner 1500ms infinite linear;
+                    border-radius: 0.5em;
+                    -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+                    box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+                }
+
+        /* Animation */
+
+        @@-webkit-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@-moz-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@-o-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <!-- Loading -->
+    <script src="~/Content/client/js/vendor.min.js"></script>
+    <script src="~/Content/client/js/scripts.min.js"></script>
+    <script src="~/Content/client/js/fancy-slider/index.js"></script>
+
+    <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+    <script src='https://k1ngzed.com/dist/swiper/swiper.min.js'></script>
+    <script src='https://k1ngzed.com/dist/EasyZoom/easyzoom.js'></script>
+    <script src="~/Content/client/js/shopImage.js"></script>
+    <script src="~/Content/Vendors/toastr/toastr.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-loading-overlay/2.1.7/loadingoverlay.min.js"></script>
+
+
+    <script src="~/Content/client/js/modernizr.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @*<script src="/Content/client/js/countDown.js"></script>*@
+    <script src="~/Content/client/js/store.js"></script>
+    <script>
+        var addCount = 1;
+        function IncreaseProductCount() {
+            addCount += 1;
+            $("#txtProductCount").html(addCount);
+        }
+
+        function DecreaseProductCount() {
+            if (addCount > 1)
+                addCount -= 1;
+            $("#txtProductCount").html(addCount);
+        }
+        function getMobileOperatingSystem() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            // Windows Phone must come first because its UA also contains "Android"
+            if (/windows phone/i.test(userAgent)) {
+                return "Windows Phone";
+            }
+
+            if (/android/i.test(userAgent)) {
+                return "Android";
+            }
+
+            // iOS detection from: http://stackoverflow.com/a/9039885/177710
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return "iOS";
+            }
+
+            return "unknown";
+        }
+        //function isIOS() {
+        //    return [
+        //        'iPad Simulator',
+        //        'iPhone Simulator',
+        //        'iPod Simulator',
+        //        'iPad',
+        //        'iPhone',
+        //        'iPod'
+        //    ].includes(navigator.platform)
+        //        // iPad on iOS 13 detection
+        //        || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        //}
+
+        //function AddToCart(id, mainFeature) { // e : sender event
+        //    var mainFeatureId = null;
+        //    if (mainFeature != null) {
+        //        mainFeatureId = mainFeature;
+        //    }
+
+        //    if (isIOS()) {
+        //        if (mainFeatureId === null)
+        //            window.location = '/Shop/AddItemToCart?productId=' + id;
+        //        else {
+        //            window.location = '/Shop/AddItemToCart?productId=' + id + '&mainFeatureId=' + mainFeatureId;
+        //        }
+
+        //        return;
+        //    }
+
+        //    if (mainFeatureId === null) {
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: '/Shop/AddToCart?productId=' + id,
+        //            success: function (data) {
+        //                console.log(data);
+        //                var res = JSON.parse(data);
+        //                toastr.options = {
+        //                    "closeButton": true,
+        //                    "debug": false,
+        //                    "newestOnTop": false,
+        //                    "progressBar": false,
+        //                    "positionClass": "toast-top-right",//"toast-top-full-width",//
+        //                    "preventDuplicates": false,
+        //                    "onclick": null,
+        //                    "showDuration": "300",
+        //                    "hideDuration": "1000",
+        //                    "timeOut": "5000",
+        //                    "extendedTimeOut": "1000",
+        //                    "showEasing": "swing",
+        //                    "hideEasing": "linear",
+        //                    "showMethod": "fadeIn",
+        //                    "hideMethod": "fadeOut"
+        //                }
+
+        //                if (res == "success") {
+        //                    toastr.success("محصول به سبد اضافه شد");
+
+
+
+        //                    // update checkout page table
+        //                    var wrapper = __(".checkout-cart-wrapper");
+        //                    if (wrapper != null && wrapper != undefined) {
+        //                        var invoiceNumber = $("#InvoiceNumber").val();
+
+        //                        $(".checkout-cart-wrapper").LoadingOverlay("show", {
+        //                            image: "",
+        //                            fontawesome: "icon-loader"
+        //                        });
+
+        //                        $.ajax({
+        //                            type: 'GET',
+        //                            url: '/Shop/CartTable?invoiceNumber=' + invoiceNumber,
+        //                            success: function (data) {
+        //                                $(".checkout-cart-wrapper").html(data);
+        //                                $(".checkout-cart-wrapper").LoadingOverlay("hide");
+        //                            },
+        //                            error: function (data) {
+
+        //                            }
+        //                        })
+        //                    }
+
+        //                }
+        //                else if (res == "finished")
+        //                    toastr.info("محصول دیگری برای اضافه کردن به سبد خرید در انبار وجود ندارد");
+
+        //                GetCart();
+        //            },
+        //            error: function (data) {
+        //                console.log("error");
+        //                console.log(data);
+        //            },
+        //            complete: function () {
+        //            }
+        //        });
+        //    } else {
+        //        $.ajax({
+        //            type: 'POST',
+        //            url: '/Shop/AddToCart?productId=' + id + '&mainFeatureId=' + mainFeatureId,
+        //            success: function (data) {
+        //                console.log(data);
+        //                var res = JSON.parse(data);
+        //                toastr.options = {
+        //                    "closeButton": true,
+        //                    "debug": false,
+        //                    "newestOnTop": false,
+        //                    "progressBar": false,
+        //                    "positionClass": "toast-top-right",//
+        //                    "preventDuplicates": false,
+        //                    "onclick": null,
+        //                    "showDuration": "300",
+        //                    "hideDuration": "1000",
+        //                    "timeOut": "5000",
+        //                    "extendedTimeOut": "1000",
+        //                    "showEasing": "swing",
+        //                    "hideEasing": "linear",
+        //                    "showMethod": "fadeIn",
+        //                    "hideMethod": "fadeOut"
+        //                }
+
+        //                if (res == "success") {
+        //                    toastr.success("محصول به سبد اضافه شد");
+
+        //                    // update checkout page table
+        //                    var wrapper = __(".checkout-cart-wrapper");
+        //                    if (wrapper != null && wrapper != undefined) {
+        //                        var invoiceNumber = $("#InvoiceNumber").val();
+
+        //                        $(".checkout-cart-wrapper").LoadingOverlay("show", {
+        //                            image: "",
+        //                            fontawesome: "icon-loader"
+        //                        });
+
+        //                        $.ajax({
+        //                            type: 'GET',
+        //                            url: '/Shop/CartTable?invoiceNumber=' + invoiceNumber,
+        //                            success: function (data) {
+        //                                $(".checkout-cart-wrapper").html(data);
+        //                                $(".checkout-cart-wrapper").LoadingOverlay("hide");
+        //                            },
+        //                            error: function (data) {
+
+        //                            }
+        //                        })
+        //                    }
+
+        //                }
+        //                else if (res == "finished")
+        //                    toastr.info("محصول دیگری برای اضافه کردن به سبد خرید در انبار وجود ندارد");
+
+        //                GetCart();
+        //            },
+        //            error: function (data) {
+        //                console.log("error");
+        //                console.log(data);
+        //            },
+        //            complete: function () {
+        //            }
+        //        });
+        //    }
+        //}
+        //function RemoveFromCart(id, mainFeatureId, complete) {
+        //    if (isIOS()) {
+        //        window.location = '/Shop/RemoveItemFromCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&complete=' + complete;
+
+        //        return;
+        //    }
+
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Shop/RemoveFromCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&complete=' + complete,
+        //        success: function (data) {
+        //            toastr.options = {
+        //                "closeButton": true,
+        //                "debug": false,
+        //                "newestOnTop": false,
+        //                "progressBar": false,
+        //                "positionClass": "toast-top-right",//
+        //                "preventDuplicates": false,
+        //                "onclick": null,
+        //                "showDuration": "300",
+        //                "hideDuration": "1000",
+        //                "timeOut": "5000",
+        //                "extendedTimeOut": "1000",
+        //                "showEasing": "swing",
+        //                "hideEasing": "linear",
+        //                "showMethod": "fadeIn",
+        //                "hideMethod": "fadeOut"
+        //            }
+
+        //            toastr.info("محصول از سبد حذف شد");
+
+
+        //            // update checkout page table
+        //            var wrapper = __(".checkout-cart-wrapper");
+        //            if (wrapper != null && wrapper != undefined) {
+        //                var invoiceNumber = $("#InvoiceNumber").val();
+
+        //                $(".checkout-cart-wrapper").LoadingOverlay("show", {
+        //                    image: "",
+        //                    fontawesome: "icon-loader"
+        //                });
+
+        //                $.ajax({
+        //                    type: 'GET',
+        //                    url: '/Shop/CartTable?invoiceNumber=' + invoiceNumber,
+        //                    success: function (data) {
+        //                        $(".checkout-cart-wrapper").html(data);
+        //                        $(".checkout-cart-wrapper").LoadingOverlay("hide");
+        //                    },
+        //                    error: function (data) {
+
+        //                    }
+        //                })
+        //            }
+
+
+
+        //            GetCart();
+        //        },
+        //        error: function (data) {
+        //            console.log("error");
+        //            console.log(data);
+        //        },
+        //        complete: function () {
+        //        }
+        //    });
+        //}
+        //function EmptyCart(reload) {
+        //    $.ajax({
+        //        type: 'POST',
+        //        url: '/Shop/EmptyCart',
+        //        success: function (data) {
+        //            toastr.options = {
+        //                "closeButton": true,
+        //                "debug": false,
+        //                "newestOnTop": false,
+        //                "progressBar": false,
+        //                "positionClass": "toast-top-right",//
+        //                "preventDuplicates": false,
+        //                "onclick": null,
+        //                "showDuration": "300",
+        //                "hideDuration": "1000",
+        //                "timeOut": "5000",
+        //                "extendedTimeOut": "1000",
+        //                "showEasing": "swing",
+        //                "hideEasing": "linear",
+        //                "showMethod": "fadeIn",
+        //                "hideMethod": "fadeOut"
+        //            }
+
+        //            toastr.info("سبد خالی شد!");
+        //            if (reload) {
+        //                setTimeout(() => {
+        //                    window.location.reload();
+        //                }, 1000);
+        //            }
+        //            GetCart();
+        //        },
+        //        error: function (data) {
+        //            console.log("error");
+        //            console.log(data);
+        //        },
+        //        complete: function () {
+        //        }
+        //    });
+        //}
+        //function GetCart() {
+        //    $.ajax({
+        //        type: 'GET',
+        //        url: '/Home/CartSection',
+        //        success: function (data) {
+        //            $("#cartSection").html(data);
+        //        },
+        //        error: function (data) {
+        //            console.log("error");
+        //            console.log(data);
+        //        },
+        //        complete: function () {
+        //        }
+        //    });
+        //    if ($("#CartTable") !== undefined) {
+        //        $.ajax({
+        //            type: 'GET',
+        //            url: '/Shop/CartTable',
+        //            success: function (data) {
+        //                $("#CartTable").html(data);
+        //            },
+        //            error: function (data) {
+        //                console.log("error");
+        //                console.log(data);
+        //            },
+        //            complete: function () {
+        //            }
+        //        });
+        //    }
+        //}
+
+        //function FormSideMenuActions() {
+        //    var f = $("ul.menu").height();
+        //    console.log(f);
+        //    console.log($(".offcanvas-submenu"));
+        //    $(".offcanvas-submenu").each(function () {
+        //        $(this).prepend('<li class="back-btn"><a href="#">برگشت</a></li>')
+        //    });
+        //    var ID, img, counter = 0;
+
+        //    var g = $(".has-children .sub-menu-toggle");
+        //    $(".offcanvas-menu .offcanvas-submenu .back-btn").on("click", function (b) {
+        //        var c = this,
+        //            d = $(c).parent(),
+        //            e = $(c).parent().parent().siblings().parent(),
+        //            g = $(c).parents(".menu");
+
+        //        e = $(c).parent().parent().parent();
+        //        console.log(c);
+        //        console.log(d);
+        //        console.log(e);
+        //        console.log(g);
+
+        //        d.removeClass("in-view"), e.removeClass("off-view"), "menu" === e.attr("class") ? g.css("height", f) : g.css("height", e.height()), b.preventDefault()
+        //    }), g.on("click", function (b) {
+        //        var c = this,
+        //            d = $(c).parent().parent().parent(),
+        //            e = $(c).parents(".menu");
+        //        return d.addClass("off-view"), $(c).parent().parent().find("> .offcanvas-submenu").addClass("in-view"), e.css("height", $(c).parent().parent().find("> .offcanvas-submenu").height()), b.preventDefault(), !1
+        //    });
+        //}
+
+        //function GetCategoriesMenu() {
+
+        //    var preLoader = '<div style="direction:rtl; text-align:right; color:#fff; padding:10px">در حال بارگذاری ...</div>';
+
+        //    $("#shop-categories").html(preLoader);
+        //    $.ajax({
+        //        type: 'GET',
+        //        url: '/Home/SideCategoriesMenu',
+        //        success: function (data) {
+        //            $("#shop-categories").html(data);
+        //            FormSideMenuActions();
+        //        },
+        //        error: function (data) {
+
+        //        },
+        //        complete: function () {
+
+        //        }
+        //    });
+        //}
+        //GetCategoriesMenu();
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",//"toast-top-full-width",//
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
+        function RemoveWarningClass() {
+            $(".main-feature-plane").removeClass("fade-warning");
+        }
+
+        var addCount = 1;
+        function IncreaseProductCount() {
+            addCount += 1;
+            $("#txtProductCount").html(addCount);
+        }
+
+        function DecreaseProductCount() {
+            if (addCount > 1)
+                addCount -= 1;
+            $("#txtProductCount").html(addCount);
+        }
+
+        function isIOS() {
+
+            return [
+                'iPad Simulator',
+                'iPhone Simulator',
+                'iPod Simulator',
+                'iPad',
+                'iPhone',
+                'iPod'
+            ].includes(navigator.platform)
+                // iPad on iOS 13 detection
+                || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+        }
+
+        function getMobileOperatingSystem() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+            // Windows Phone must come first because its UA also contains "Android"
+            if (/windows phone/i.test(userAgent)) {
+                return "Windows Phone";
+            }
+
+            if (/android/i.test(userAgent)) {
+                return "Android";
+            }
+
+            // iOS detection from: http://stackoverflow.com/a/9039885/177710
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return "iOS";
+            }
+
+            return "unknown";
+        }
+
+        function AddToCart(id, mainFeature) {
+            debugger;
+            if (mainFeature == null || mainFeature == undefined || mainFeature == "") {
+                // check if we are on product details page
+                var txt = $("#mainFeatureId");
+                if (txt.length > 0) {
+                    toastr.info("لطفا نوع محصول خود را انتخاب کنید");
+                    $(".main-feature-plane").addClass("fade-warning");
+                    setTimeout(RemoveWarningClass, 3000);
+                    return;
+                }
+            }
+
+            var url = "";
+            if (isIOS()) {
+                if (mainFeatureId === null)
+                    url = '/Shop/AddItemToCart?productId=' + id + '&count=' + addCount;
+                else {
+                    url = '/Shop/AddItemToCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&count=' + addCount;
+                }
+            }
+            else {
+                if (mainFeatureId === null)
+                    url = '/Shop/AddToCart?productId=' + id + '&count=' + addCount;
+                else {
+                    url = '/Shop/AddToCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&count=' + addCount;
+                }
+
+            }
+
+            console.log(url);
+
+            $("#loading").show();
+            var mainFeatureId = null;
+            if (mainFeature != null) {
+                mainFeatureId = mainFeature;
+            }
+
+            if (mainFeatureId === null) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data == "added") {
+                            toastr.success("محصول به سبد اضافه گردید. ");
+                        }
+                        else if (data == "ran out")
+                            alert("موجودی این محصول با این تعداد به پایان رسیده است");
+                        GetCart();
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                        $("#loading").hide();
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data == "added") {
+                            toastr.success("محصول به سبد اضافه گردید. ");
+                        }
+                        else if (data == "ran out")
+                            alert("موجودی این محصول با این تعداد به پایان رسیده است");
+                        GetCart();
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                        $("#loading").hide();
+                    }
+                });
+            }
+        }
+        function RemoveFromCart(id, mainFeatureId, complete) {
+
+            var url = "";
+            if (isIOS()) {
+                url = '/Shop/RemoveItemFromCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&complete=' + complete;
+            }
+            else {
+                url = '/Shop/RemoveFromCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&complete=' + complete;
+            }
+
+            $("#loading").show();
+            $.ajax({
+                type: 'POST',
+                url: url,
+                success: function (data) {
+                    GetCart();
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                    $("#loading").hide();
+                }
+            });
+        }
+        function GetCart() {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/CartSection',
+                success: function (data) {
+                    $("#cartSection").html(data);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+            if ($("#CartTable") !== undefined) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Shop/CartTable',
+                    success: function (data) {
+                        $("#CartTable").html(data);
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+        }
+    </script>
+    <script>
+        @*function AddToWishList(id) {
+        var userIsLoggedIn = '@(User.Identity.IsAuthenticated)';
+        if (userIsLoggedIn === 'False') {
+            location.href = "/Customer/Auth/Login";
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/Shop/AddToWishList?productId=' + id,
+                success: function (data) {
+                    alert('محصول مورد نظر به لیست علاقه مندی های شما افزوده شد');
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+        }
+    }
+    function removeFromWishList(id) {
+        $.ajax({
+                type: 'POST',
+                url: '/Shop/RemoveFromWishList?productId=' + id,
+            success: function (data) {
+                GetWishList();
+            },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+    }
+    function GetWishList() {
+        $.ajax({
+                type: 'GET',
+                url: '/Shop/WishListTable',
+                success: function (data) {
+                    $("#WishListTable").html(data);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+    }*@
+          function AddToWishList(id) {
+            $("#loading").show();
+            var userIsLoggedIn = '@(User.Identity.IsAuthenticated)';
+            if (userIsLoggedIn === 'False') {
+                $("#loading").hide();
+                location.href = "/Customer/Auth/Login";
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Shop/AddToWishList?productId=' + id,
+                    success: function (data) {
+                        alert('محصول مورد نظر به لیست علاقه مندی های شما افزوده شد');
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                        $("#loading").hide();
+                    }
+                });
+            }
+        }
+        function removeFromWishList(id) {
+            $("#loading").show();
+            $.ajax({
+                type: 'POST',
+                url: '/Shop/RemoveFromWishList?productId=' + id,
+                success: function (data) {
+                    GetWishList();
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                    $("#loading").hide();
+                }
+            });
+        }
+        function GetWishList() {
+            $.ajax({
+                type: 'GET',
+                url: '/Shop/WishListTable',
+                success: function (data) {
+                    $("#WishListTable").html(data);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+        }
+    </script>
+
+    <script>
+        var doc = document;
+        function __(item) {
+            return doc.querySelector(item);
+        }
+
+        $("#chkHasDiscountCode").on("change", function () {
+            //reset
+            __(".discount-message").innerHTML = "";
+            __("#txtDiscountCode").value = "";
+
+            var section = $(".checkout-discount-section");
+
+            if ($("#chkHasDiscountCode").is(':checked')) {
+                section.css({ "display": "block" });
+            }
+            else {
+                section.css({ "display": "none" })
+            }
+        })
+
+        function ApplyDiscountCode(e, invoiceNumber) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var discountCodeStr = __("#txtDiscountCode").value;
+
+            if (discountCodeStr === "") {
+
+                __("#txtDiscountCode").style.borderColor = "#ff0000";
+                return;
+
+            } else {
+                __("#txtDiscountCode").style.borderColor = "#e5e5e5";
+                $(e.target).LoadingOverlay("show", {
+                    image: "",
+                    fontawesome: "icon-loader"
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Shop/ApplyDiscountCode?discountCodeStr=' + discountCodeStr + "&invoiceNumber=" + invoiceNumber,
+                    success: function (result) {
+                        var res = JSON.parse(result);
+                        if (res.Response == "invalid") {
+                            __(".discount-message").innerHTML = '<div class="alert alert-warning">کد تخفیف نامعتبر است</div>';
+                            $(e.target).LoadingOverlay("hide");
+                        }
+                        else if (res.Response == "login") {
+                            __(".discount-message").innerHTML = '<div class="alert alert-warning">برای استفاده از کد تخفیف باید ابتدا وارد حساب کاربری خود شوید.</div>';
+                            $(e.target).LoadingOverlay("hide");
+                        }
+                        else {
+                            __(".discount-message").innerHTML = '<div class="alert alert-success">کد تخفیف معتبر بوده و تخفیف اعمال گردید.</div>';
+                            __("#txtDiscountCode").disabled = true;
+                            __(".btn-discount").disabled = true;
+                            __("#DiscountCode").value = discountCodeStr;
+                            $(e.target).LoadingOverlay("hide");
+                        }
+                        __(".finalPrice").innerHTML = Number(res.FinalPrice.toFixed(0)).toLocaleString() + " تومان";
+                        __("#tdDiscountAmount").innerHTML = Number(res.DiscountAmount.toFixed(0)).toLocaleString() + " تومان";
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                        $(e.target).LoadingOverlay("hide");
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+
+
+
+        }
+
+    </script>
+
+
+
+    <script>
+        $("#search-form").submit(function (e) {
+            e.preventDefault();
+            var searchString = $("#searchString").val();
+            location.href = '/Shop/ProductList/Search/' + searchString;
+        });
+    </script>
+    <!-- Not Found Page -->
+    <script>
+        $("#notFoundSearch").submit(function (e) {
+            e.preventDefault();
+            var searchString = $("#txtSearchString").val();
+            location.href = '/Shop/ProductList/Search/' + searchString;
+        });
+
+    </script>
+
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

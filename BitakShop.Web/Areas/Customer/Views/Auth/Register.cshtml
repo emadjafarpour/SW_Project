@@ -1,0 +1,151 @@
+﻿@using BitakShop.Web.ViewModels
+@model FullAccountingViewModel
+@{
+    ViewBag.Title = "ورود به پنل کاربری";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>ورود اعضا</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>ورود اعضا</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Page Content-->
+<div class="container padding-bottom-3x mb-2">
+    @if (!Html.ViewData.ModelState.IsValid)
+    {
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-warning" style="margin-bottom:20px;">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-6">
+            @using (Html.BeginForm("Login", "Auth", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "login-box", @style = "background-color:#e1e7ec;", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="padding-top-3x hidden-md-up"></div>
+                <h3 class="margin-bottom-1x">ورود به حساب کاربری</h3>
+                <p>چنانچه قبلا حساب کاربری ایجاد کرده اید می توانید وارد حساب کاربری خود شود</p>
+                <div class="form-group input-group">
+                    @Html.TextBoxFor(m => m.loginViewModel.UserName, new { @class = "form-control", @placeholder = "نام کاربری ..." })
+                    <span class="input-group-addon"><i class="icon-head"></i></span>
+                </div>
+                <div class="form-group input-group">
+                    @Html.TextBoxFor(m => m.loginViewModel.Password, new { type = "Password", @class = "form-control", @placeholder = "رمز عبور ..." })
+                    <span class="input-group-addon"><i class="icon-lock"></i></span>
+                </div>
+                <div class="d-flex flex-wrap justify-content-between padding-bottom-1x">
+                    <label class="custom-control custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" name="chkRemember" checked><span class="custom-control-indicator"></span><span class="custom-control-description">مرا بخاطر بسپار</span>
+                    </label><a class="navi-link" href="#">فراموشی رمز عبور ؟</a>
+                </div>
+                <div class="text-center text-sm-right">
+                    <button class="btn btn-primary margin-bottom-none" type="submit">ورود به بی تک</button>
+                </div>
+                <div class="form-group">
+                    <div>@Html.ValidationMessageFor(m => m.loginViewModel.UserName, "")</div>
+                    <div>@Html.ValidationMessageFor(m => m.loginViewModel.Password, "")</div>
+                </div>
+            }
+        </div>
+
+        <div class="col-md-6">
+            <div class="padding-top-3x hidden-md-up"></div>
+            <h3 class="margin-bottom-1x">ثبت نام - ایجاد حساب جدید</h3>
+            <p>ثبت نام کمتر از 60 ثانیه طول میکشد اما به شما کنترل کامل سفارشات را میدهد</p>
+            @using (Html.BeginForm("Register", "Auth", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "row", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.registerCustomerViewModel.FirstName)
+                        @Html.TextBoxFor(m => m.registerCustomerViewModel.FirstName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.registerCustomerViewModel.FirstName, "")
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.registerCustomerViewModel.LastName)
+                        @Html.TextBoxFor(m => m.registerCustomerViewModel.LastName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.registerCustomerViewModel.LastName, "")
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.registerCustomerViewModel.UserName)
+                        @Html.TextBoxFor(m => m.registerCustomerViewModel.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.registerCustomerViewModel.UserName, "")
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.registerCustomerViewModel.Email)
+                        @Html.TextBoxFor(m => m.registerCustomerViewModel.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.registerCustomerViewModel.UserName, "")
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.registerCustomerViewModel.Password)
+                        @Html.TextBoxFor(m => m.registerCustomerViewModel.Password, new { type = "Password", @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.registerCustomerViewModel.Password, "")
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.registerCustomerViewModel.ConfirmPassword)
+                        @Html.TextBoxFor(m => m.registerCustomerViewModel.ConfirmPassword, new { type = "Password", @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.registerCustomerViewModel.ConfirmPassword, "")
+                    </div>
+                </div>
+                <div class="col-12 text-center text-sm-right">
+                    <button class="btn btn-primary margin-bottom-none" type="submit">ثبت نام کاربر جدید</button>
+                </div>
+            }
+        </div>
+
+
+
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<style>
+    .field-validation-error span {
+        color: darkred;
+    }
+</style>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

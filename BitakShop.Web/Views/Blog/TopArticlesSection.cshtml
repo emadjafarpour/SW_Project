@@ -1,0 +1,20 @@
+﻿@model List<BitakShop.Web.ViewModels.LatestArticlesViewModel>
+
+
+<!-- Widget Featured Posts-->
+<section class="widget widget-featured-posts widget-border bg-white mb-2">
+    <h3 class="widget-title">مطالب محبوب</h3>
+
+    @foreach (var item in Model)
+    {
+        <!-- Entry-->
+        <div class="entry">
+            <div class="entry-thumb"><a href="/Blog/Article/@item.Id/@item.Title"><img src="~/Files/ArticleImages/Thumb/@item.Image" alt="@item.Title"></a></div>
+            <div class="entry-content">
+                <h4 class="entry-title"><a href="/Blog/Article/@item.Id/@item.Title">@item.Title</a></h4><span class="entry-meta">توسط @item.Author</span>
+            </div>
+        </div>
+    }
+</section>
+
+

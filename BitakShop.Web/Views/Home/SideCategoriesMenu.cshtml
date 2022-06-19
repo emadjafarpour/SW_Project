@@ -1,0 +1,47 @@
+﻿
+@model List<BitakShop.Core.Models.ProductGroup>
+
+<a class="account-link" href="#">
+    <div class="user-ava"><img src="~/Files/UserAvatars/user-avatar.png"></div>
+    <div class="user-info">
+        <h6 class="user-name">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span>@(User.Identity.Name)</span>
+            }
+            else
+            {
+                <span>کاربر مهمان</span>
+            }
+        </h6><span class="text-sm text-white opacity-60">خوش آمدید</span>
+    </div>
+</a>
+<nav class="offcanvas-menu">
+    <ul class="menu">
+
+        @{ 
+            foreach(var item in Model)
+            {
+                var cssClass = "";
+                if (item.Children.Count > 0)
+                {
+                    cssClass = "has-children";
+                }
+
+                <li class="@cssClass">
+                    <span><a href="/Shop/ProductList/@item.Id">@item.Title</a><span class="sub-menu-toggle"></span></span>
+                    @if (item.Children.Count > 0)
+                    {
+                        <ul class="offcanvas-submenu">
+                            @foreach(var child in item.Children)
+                            {
+                                <li><a href="/Shop/ProductList/@child.Id">@child.Title</a></li>
+                            }
+                        </ul>
+                    }
+
+                </li>
+            }
+        }
+    </ul>
+</nav>

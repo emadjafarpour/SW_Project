@@ -1,0 +1,25 @@
+﻿@model BitakShop.Core.Models.Brand
+<h4 class="card-label">
+    آیا مطمئن هستید که می خواهید این پیشنهاد را حذف کنید؟
+</h4>
+<dl class="row" style="padding-top:10px">
+    <dt class="col-sm-4">
+        @Html.DisplayNameFor(model => model.Name)
+    </dt>
+    <dd class="col-sm-8">
+        @Html.DisplayFor(model => model.Name)
+    </dd>
+    <dt class="col-sm-4">
+        @Html.DisplayNameFor(model => model.Logo)
+    </dt>
+    <dd class="col-sm-8">
+        <img src="~/Files/BrandsImages/@Model.Logo" style="height: 50px" alt="@Model.Name"/>
+    </dd>
+</dl>
+<div style="float:left">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <input type="submit" value="حذف" class="btn btn-danger mr-2" />
+    }
+</div>

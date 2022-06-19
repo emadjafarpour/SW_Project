@@ -1,0 +1,58 @@
+﻿@model List<BitakShop.Web.ViewModels.CustomerInvoiceViewModel>
+@{
+    ViewBag.Title = "سفارشات";
+}
+<input type="hidden" id="nav_active" value="invoices">
+<input type="hidden" id="nav_item_active" value="invoices">
+<div class="card card-custom">
+    <div class="card-header flex-wrap border-0 pt-6 pb-0">
+        <div class="card-title">
+            <h3 class="card-label">
+                سفارشات
+                <span class="d-block text-muted pt-2 font-size-sm">شما میتوانید در این قست تاریخچه ی تمامی سفارشات خود را مشاهده کنید</span>
+            </h3>
+        </div>
+        <div class="card-toolbar">
+        </div>
+    </div>
+    <div class="card-body">
+        <!--begin: Datatable-->
+        <table class="datatable datatable-bordered" id="kt_datatable">
+            <thead>
+                <tr>
+                    <th title="Field #1">شماره سفارش</th>
+                    <th title="Field #2">تاریخ ثبت</th>
+                    <th title="Field #3">قیمت کل</th>
+                    <th title="Field #4">وضعیت</th>
+                    <th title="Field #5">جزئیات</th>
+                    <th title="Field #6"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>@item.InvoiceNumber</td>
+                    <td>@item.RegisteredDate</td>
+                    <td>@item.Price تومان</td>
+                    @if (item.IsPayed)
+                    {
+                        <td><span class="text-success">پرداخت موفق</span></td>
+                    }
+                    else if (DateTime.Now.Subtract(item.AddedDate).Days > 1)
+                    {
+                        <td><span class="text-warning">منقضی شده</span></td>
+                    }
+                    else
+                    {
+                        <td><a href="/Shop/Checkout/?invoiceNumber=@item.InvoiceNumber">پرداخت نشده</a></td>
+                    }
+                    <td><a href="/Customer/Dashboard/InvoiceDetails/?id=@item.Id"><i class="fa fa-eye" style="color:#0099ff;"></i></a></td>
+                    <td></td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        <!--end: Datatable-->
+    </div>
+</div>

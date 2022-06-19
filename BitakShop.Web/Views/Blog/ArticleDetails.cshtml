@@ -1,0 +1,324 @@
+﻿@model BitakShop.Web.ViewModels.ArticleDetailsViewModel
+@{
+    ViewBag.Title = $"مقاله {Model.Title}";
+}
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>مقاله @Model.Title</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>
+                    <a href="/Blog">بلاگ</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>@Model.Title</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- Page Content-->
+    <div class="container padding-bottom-3x mb-2 text-right">
+        <div class="row">
+            <!-- Content-->
+            <div class="col-xl-9 col-lg-8 order-lg-2 soft-shadow bg-white pt-3 pb-3">
+                <!-- Post-->
+                <div class="single-post-meta">
+                    <div class="column">
+                        <div class="meta-link"><span> توسط </span>@Model.Author</div>
+                        <div class="meta-link"><span> در </span><a href="/Blog?category=@Model.CategoryId">@Model.CategoryName</a></div>
+                    </div>
+                    <div class="column">
+                        <div class="meta-link"><a><i class="icon-clock"></i> @Model.PersianDate</a></div>
+                        <div class="meta-link"><a class="scroll-to" href="#comments"> <i class="icon-speech-bubble"></i> @Model.ArticleComments.Count</a></div>
+                    </div>
+                </div>
+                <div class="owl-carousel" data-owl-carousel="{ &quot;nav&quot;: true, &quot;dots&quot;: true, &quot;loop&quot;: true }">
+                    <figure>
+                        <img src="~/Files/ArticleImages/Image/@Model.Image" alt="@Model.Title">
+                        <figcaption class="text-white">@Model.Title</figcaption>
+                    </figure>
+                </div>
+                <h2 class="padding-top-2x">@Model.Title</h2>
+
+                @Html.Raw(Model.Description)
+
+                <div class="single-post-footer">
+                    <div class="column">
+                        @foreach (var tag in Model.Tags)
+                        {
+                            <a href="/Blog?searchString=@tag.Title" class="sp-tag">#@tag.Title</a>
+                        }
+                    </div>
+                    <div class="column">
+                        <div class="entry-share">
+                            <span class="text-muted">اشتراک گذاری:</span>
+                            <div class="share-links"><a class="social-button shape-circle sb-facebook" href="#" data-toggle="tooltip" data-placement="top" title="فیس بوک"><i class="socicon-facebook"></i></a><a class="social-button shape-circle sb-twitter" href="#" data-toggle="tooltip" data-placement="top" title="توییتر"><i class="socicon-twitter"></i></a><a class="social-button shape-circle sb-instagram" href="#" data-toggle="tooltip" data-placement="top" title="اینستاگرام"><i class="socicon-instagram"></i></a><a class="social-button shape-circle sb-google-plus" href="#" data-toggle="tooltip" data-placement="top" title="گوگل + "><i class="socicon-googleplus"></i></a></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Post Navigation-->
+                <div class="entry-navigation">
+                    <div class="column text-left">
+                        @{
+                            if (Model.PreviousArticleID > 0)
+                            {
+                                <a class="btn btn-outline-secondary btn-sm" href="/Blog/Article/@Model.PreviousArticleID"><i class="icon-arrow-right"></i>&nbsp; قبلی</a>
+                        }
+                        }
+                    </div>
+
+                    <div class="column"><a class="btn btn-outline-secondary view-all" href="/Blog?category=@Model.CategoryId" data-toggle="tooltip" data-placement="top" title="نمایش تمام پست های این دسته"><i class="icon-menu"></i></a></div>
+
+                    <div class="column text-right">
+                        @{
+                            if (Model.NextArticleID > 0)
+                            {
+                                <a class="btn btn-outline-secondary btn-sm" href="/Blog/Article/@Model.NextArticleID">بعدی &nbsp;<i class="icon-arrow-left"></i></a>
+                            }
+                        }
+                    </div>
+
+                </div>
+                <!-- Relevant Posts-->
+                @if (Model.RelatedArticles.Count > 0)
+                {
+                    <h3 class="padding-top-3x padding-bottom-1x">ممکن است از این مطالب خوشتان بیاید</h3>
+                    <div style="background-color: #e8e8e8;" class="owl-carousel pt-3" data-owl-carousel="{ &quot;nav&quot;: false, &quot;dots&quot;: true, &quot;loop&quot;: false, &quot;autoHeight&quot;: true, &quot;margin&quot;: 30, &quot;responsive&quot;: {&quot;0&quot;:{&quot;items&quot;:1},&quot;630&quot;:{&quot;items&quot;:2},&quot;991&quot;:{&quot;items&quot;:3},&quot;1200&quot;:{&quot;items&quot;:3}} }">
+
+                        @{
+                            foreach (var item in Model.RelatedArticles)
+                            {
+                                <div class="widget widget-featured-posts">
+                                    <div class="entry">
+                                        <div class="entry-thumb"><a href="/Blog/Article/@item.Id/@item.Title.Replace(' ','-')"><img src="~/Files/ArticleImages/Image/@Model.Image" alt="@Model.Title"></a></div>
+                                        <div class="entry-content">
+                                            <h4 class="entry-title">
+                                                <a href="/Blog/Article/@item.Id/@item.Title.Replace(' ','-')">
+                                                    @item.Title
+                                                </a>
+                                            </h4>
+                                            <span class="entry-meta">
+                                                @item.Author
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+
+
+
+                <!-- Comments-->
+                <section class="padding-top-3x" id="comments">
+                    <h3 class="padding-bottom-1x">دیدگاه های شما</h3>
+
+
+
+                    @foreach (var comment in Model.ArticleComments.Where(c => c.ParentId == null))
+                    {
+
+                        <div class="comment">
+                            <div class="comment-author-ava"><img src="/Files/UserAvatars/user-avatar.png" alt="@comment.Name"></div>
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <h4 class="comment-title">@comment.Name</h4>
+                                </div>
+                                <p class="comment-text">
+                                    @comment.Message
+                                </p>
+                                <div class="comment-footer">
+                                    <div class="column"><span class="comment-meta">@comment.AddedDate</span></div>
+                                    <div class="column"><a href="#replySection" class="reply-link" onclick="AnswerComment('@comment.Id','@comment.Name')"><i class="icon-reply"></i>پاسخ</a></div>
+                                </div>
+                                @foreach (var childComment in Model.ArticleComments.Where(c => c.ParentId == comment.Id))
+                                {
+                                    <!-- Comment reply-->
+                                    <div class="comment comment-reply">
+                                        <div class="comment-author-ava"><img src="/Files/UserAvatars/user-avatar.png" alt="@childComment.Name"></div>
+                                        <div class="comment-body">
+                                            <div class="comment-header">
+                                                <h4 class="comment-title">@childComment.Name</h4>
+                                            </div>
+                                            <p class="comment-text">
+                                                @childComment.Message
+                                            </p>
+                                            <div class="comment-footer"><span class="comment-meta"> @comment.AddedDate</span></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+                    }
+
+                </section>
+                <!-- Comment Form-->
+                <span id="replySection"></span>
+                <h4 class="padding-top-2x padding-bottom-1x">افزودن یک دیدگاه</h4>
+                <h6 id="answerPerson"></h6>
+                @using (Html.BeginForm("PostComment", "Blog", FormMethod.Post, new { id = "commentform", @class = "row" }))
+                {
+                    <input type="hidden" id="ArticleId" name="ArticleId" value="@Model.Id">
+                    <input type="hidden" id="ParentId" name="ParentId" value="">
+                    <input type="hidden" id="Rate" name="Rate" value="5">
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="comment-name">نام</label>
+                            <input class="form-control form-control-rounded" type="text" id="Name" name="Name" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="comment-email">ایمیل</label>
+                            <input class="form-control form-control-rounded" type="email" name="Email" id="Email" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="comment-text">متن دیدگاه</label>
+                            <textarea class="form-control form-control-rounded" rows="7" name="Message" id="Message" placeholder="دیدگاه خود را در اینجا بنویسید ..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12 text-right">
+                        <button class="btn btn-pill btn-primary" type="submit">ارسال دیدگاه</button>
+                    </div>
+
+                }
+
+            </div>
+            <!-- Sidebar          -->
+            <div class="col-xl-3 col-lg-4 ">
+                <aside class="sidebar soft-shadow bg-white pt-3 pr-1 pl-1 pb-3">
+                    <div class="padding-top-2x hidden-lg-up"></div>
+                    <!-- Widget Search-->
+                    <section class="widget widget-border mb-2">
+                        <form class="input-group form-group" method="get" action="/Blog">
+                            <span class="input-group-btn">
+                                <button type="submit"><i class="icon-search"></i></button>
+                            </span>
+                            <input name="searchString" title="searchString" value="@ViewBag.SearchString" class="form-control" type="search" placeholder="جستجو در وبلاگ">
+                        </form>
+                    </section>
+
+
+                    <!-- Widget Categories-->
+                    @Html.Action("ArticleCategoriesSection", "Blog")
+
+
+
+                    <!-- Widget Featured Posts-->
+                    @Html.Action("TopArticlesSection", "Blog", new { take = 8 })
+
+
+                    <!-- Widget Tags-->
+                    <section class="widget widget-tags bg-white soft-shadow pt-2 pb-2 pr-2 pl-2 mb-2">
+                        <h3 class="widget-title">کلمات پر کاربرد</h3>
+
+                        @{
+                            foreach (var tag in Model.Tags)
+                            {
+                                <a class="tag" rel="tag" href="/Blog?searchString=@tag.Title">#@tag.Title</a>
+                            }
+                        }
+                    </section>
+
+                    @{
+                        if (ViewBag.SidebarImages != null)
+                        {
+                            if (!string.IsNullOrEmpty(ViewBag.SidebarImages[4].Image))
+                            {
+                                <!-- Promo Banner-->
+                                <section class="promo-box soft-shadow" style="background-image: url(/Files/StaticContentImages/Image/@ViewBag.SidebarImages[4].Image);">
+                                    <!-- Choose between .overlay-dark (#000) or .overlay-light (#fff) with default opacity of 50%. You can overrride default color and opacity values via 'style' attribute.--><span class="overlay-dark" style="opacity: .35;"></span>
+                                    <div class="promo-box-content text-center padding-top-2x padding-bottom-2x">
+                                        <h3 class="text-bold text-light text-shadow">
+                                            @Html.Raw(@ViewBag.SidebarImages[4].ShortDescription)
+                                        </h3>
+                                        <a class="btn btn-sm btn-primary" href="@ViewBag.SidebarImages[4].Link">همین حالا بخرید</a>
+                                    </div>
+                                </section>
+                            }
+
+                        }
+                    }
+
+
+                </aside>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+    <style>
+        .my-error-class {
+            color: darkred !important; /* red */
+        }
+    </style>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        <script>
+            $("#commentform").validate({
+                errorClass: "my-error-class",
+                rules: {
+                    Name: "required",
+                    Message: "required",
+                    Email: {
+                        required: true,
+                        email: true
+                    }
+                },
+                messages: {
+                    Name: "نام خود را وارد کنید",
+                    Message: "پیام خود را وارد کنید",
+                    Email: {
+                        required: "ایمیل خود را وارد کنید",
+                        email: "ایمیل وارد شده معتبر نیست"
+                    },
+                }
+            });
+        </script>
+        <script>
+            function AnswerComment(parentId, parentName) {
+                $('#answerPerson').html("در حال پاسخ دادن به  " +
+                    parentName +
+                    "<a class='reply-btn btn btn-color small' style='margin-right:10px;cursor:pointer' onclick='removePerson()'>حذف</a>");
+                $('#ParentId').val(parentId);
+            }
+
+            function removePerson() {
+                $('#answerPerson').html("");
+                $('#ParentId').val("");
+            }
+        </script>
+    }
+
+
+
+
+
+
+
+

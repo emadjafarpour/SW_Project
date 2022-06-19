@@ -1,0 +1,363 @@
+﻿@model BitakShop.Web.ViewModels.DiscountFormViewModel
+@{
+    ViewBag.Title = "تخفیف ها";
+}
+<input type="hidden" id="nav_active" value="offers_and_discounts">
+<input type="hidden" id="nav_item_active" value="discounts">
+@{
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">
+            <strong>خطا!</strong> @ViewBag.Message
+        </div>
+    }
+}
+<div class="col-lg-12">
+    <div class="card card-custom gutter-b">
+        <div class="card-header">
+            <h3 class="card-title">
+                افزودن تخفیف
+            </h3>
+        </div>
+        @using (Html.BeginForm("Create", "Discounts", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+        {
+
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, new { })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control " } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "form-text text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>نوع تخفیف</label>
+                            <div class="col-md-10">
+                                <select class="form-control" id="DiscountType" name="DiscountType">
+                                    <option value="1">درصد</option>
+                                    <option value="2">مقدار</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Amount, new { })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control " } })
+                                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "form-text text-danger" })
+                                <span style="color: red; display: none" id="AmountValidation"></span>
+                            </div>
+                        </div>
+
+                        <script src="~/Content/admin/Vendors/Clockpicker/bootstrap-clockPicker.min.js"></script>
+                        <script src="~/Content/admin/Vendors/kamaDatepicker/kamadatepicker.min.js"></script>
+                        @Html.EditorFor(Model => Model.DeadLine, new { htmlAttributes = new { @class = "form-control ", @required = "", type = "hidden" } })
+                        <div class="form-group">
+                            <label>تاریخ پایان</label>
+                            <div class="col-md-10">
+                                <div class="datetime-picker-wrapper">
+                                    <input type="text" id="txtEndDate" name="txtEndDate" value="" class="txtStartDate datepicker-input" onchange="HidePicker(event, 'txtEndTime')" placeholder="تاریخ" autocomplete="off" required />
+                                    <script type="text/javascript">
+                                        var customOptions = {
+                                            placeholder: "روز / ماه / سال"
+                                            , twodigit: false
+                                            , closeAfterSelect: false
+                                            , nextButtonIcon: "fa fa-arrow-circle-right"
+                                            , previousButtonIcon: "fa fa-arrow-circle-left"
+                                            , buttonsColor: "blue"
+                                            , forceFarsiDigits: true
+                                            , markToday: true
+                                            , markHolidays: true
+                                            , highlightSelectedDay: true
+                                            , sync: true
+                                            , gotoToday: true
+                                        }
+                                        kamaDatepicker('txtEndDate', customOptions);
+                                    </script>
+                                    <div class="input-group clockpicker1" data-placement="top" data-align="top" data-autoclose="true">
+                                        <input type="text" id="txtEndTime" name="txtEndTime" class="clock" value="" placeholder="ساعت" autocomplete="off" required onchange="PutTime()">
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-time"></span>
+                                        </span>
+                                    </div>
+                                    <script type="text/javascript">
+                                        $('.clockpicker1').clockpicker();
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>نمایش اختصاصی</label>
+                            <div class="col-md-10">
+                                <select name="DiscountLocationType" id="DiscountLocationType" class="form-control">
+                                    <option value="0" selected="selected">-- هیچکدام --</option>
+                                    <option value="1">تخفیف سربرگ</option>
+                                    <option value="2">تخفیف نوار کناری</option>
+                                    <option value="3">تخفیف اصلی اول</option>
+                                    <option value="4">تخفیف اصلی دوم</option>
+                                    <option value="5">تخفیف زمان دار</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group discount-image-wrapper hidden-section">
+                            <label class="">تصویر</label>
+                            <div class="col-md-10">
+                                <div class="image-input image-input-outline" id="discount-image">
+                                    <div class="image-input-wrapper" style="background-image: url(assets/media/users/100_1.jpg)"></div>
+
+                                    <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="آپلود تصویر">
+                                        <i class="fa fa-pen icon-sm text-muted"></i>
+                                        <input type="file" name="Image" id="Image" accept=".png, .jpg, .jpeg" />
+                                        <input type="hidden" name="discount_image_remove" />
+                                    </label>
+
+                                    <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="حذف تصویر">
+                                        <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-md-3 col-sm-6 col-form-label">تخفیف پیشنهاد</label>
+                            <div class="col-6">
+                                <span class="switch">
+                                    <label>
+                                        <input type="checkbox" name="isOffer" id="isOffer" />
+                                        <span></span>
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group row" id="offerContainer" style="display: none">
+                            <label class="col--md-2 col-form-label">پیشنهاد ها</label>
+                            <div class="col-md-10">
+                                <select class="form-control" id="Offer" name="Offer">
+                                    @foreach (var offer in ViewBag.Offers)
+                                    {
+                                        <option value="@offer.Id">@offer.Title</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="">دسته ها</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2" id="ProductGroups" name="ProductGroups" multiple="multiple">
+                                    @foreach (var item in ViewBag.ProductGroups)
+                                    {
+                                        <option value="@item.Id">@item.Title</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="">برند ها</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2" id="Brands" name="Brands" multiple="multiple">
+                                    @foreach (var brand in ViewBag.Brands)
+                                    {
+                                        <option value="@brand.Id">@brand.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="">محصولات</label>
+                            <div class="col-md-10">
+                                <select class="form-control select2" id="Products" name="Products" multiple="multiple">
+                                    @foreach (var item in ViewBag.Products)
+                                    {
+                                        <option value="@item.Id">@item.Title</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="padding-right: 40px">
+                <span style="color: red" id="DuplicateDiscountValidation"></span>
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">انصراف</a>
+                <input type="submit" value="ثبت" class="btn btn-primary mr-2" />
+            </div>
+        }
+    </div>
+</div>
+<style>
+    .image-input .image-input-wrapper {
+        width: 200px;
+    }
+</style>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <!--end::Page Scripts-->
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="/ckeditor/adapters/jquery.js"></script>
+    <script>
+        new KTImageInput('discount-image');
+        $("#DiscountLocationType").on('change', function () {
+            var val = $("#DiscountLocationType").find(":selected").val();
+            if (val > 0) {
+                $(".discount-image-wrapper").removeClass("hidden-section");
+            }
+            else {
+                $(".discount-image-wrapper").addClass("hidden-section");
+            }
+        });
+        function HidePicker(e, next) {
+            e.target.nextSibling.classList.add("bd-hide");
+
+            console.log($("#" + next));
+            $("#" + next).focus();
+            PutTime();
+        }
+
+        function PutTime() {
+            var date = $("#txtEndDate").val();
+            var time = $("#txtEndTime").val();
+            $("#DeadLine").val(date + " " + time);
+        }
+        $('#Brands').select2({
+            placeholder: "برند هایی که شامل تخفیف میشوند را انتخاب کنید"
+        });
+        $('#ProductGroups').select2({
+            placeholder: "دسته هایی که شامل تخفیف میشوند را انتخاب کنید"
+        });
+        $('#Products').select2({
+            placeholder: "محصولاتی که شامل تخفیف میشوند را انتخاب کنید"
+        });
+        $("#isOffer").change(function () {
+            if ($(this).prop("checked") === true) {
+                $('#offerContainer').show();
+            } else {
+                $('#offerContainer').hide();
+            }
+        });
+    </script>
+    <script>
+        $("#form").submit(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                var Title = $("#Title").val();
+                var DiscountType = parseInt($("#DiscountType").val());
+                var Amount = parseInt($("#Amount").val());
+                var DeadLine = $("#DeadLine").val();
+                var DiscountLocationType = $("#DiscountLocationType").find(":selected").val();
+                console.log(Amount);
+                if (DiscountType === 1 && Amount > 100) {
+                    $('#AmountValidation').text("میزان وارد شده معتبر نیست");
+                    $('#AmountValidation').show();
+                }
+                else if (Amount <= 0 || Amount == null || isNaN(Amount)) {
+                    console.log('error');
+                    $('#AmountValidation').text("لطفا میزان تخفیف را وارد کنید");
+                    $('#AmountValidation').show();
+                }
+                else {
+                    $('#AmountValidation').text("");
+                    $('#AmountValidation').hide();
+                    var BrandIds = [];
+                    $('#Brands').select2('data').map(function (i) { BrandIds.push(parseInt(i.id)) });
+                    var ProductGroupIds = [];
+                    $('#ProductGroups').select2('data').map(function (i) { ProductGroupIds.push(parseInt(i.id)) });
+                    var ProductIds = [];
+                    $('#Products').select2('data').map(function (i) { ProductIds.push(parseInt(i.id)) });
+                    var IsOffer = $('#isOffer').prop('checked');
+                    var OfferId = null;
+                    if (IsOffer) {
+                        OfferId = $('#Offer').find(":selected").val();
+                    }
+                    var newDiscount = {
+                        Title: Title,
+                        DiscountType: DiscountType,
+                        Amount: Amount,
+                        DeadLine: DeadLine,
+                        BrandIds: BrandIds,
+                        ProductGroupIds: ProductGroupIds,
+                        ProductIds: ProductIds,
+                        IsOffer: IsOffer,
+                        OfferId: OfferId,
+                        DiscountLocationType:DiscountLocationType
+                    }
+                    console.log(newDiscount);
+                    // Checking for Duplicate Items
+                    $.ajax({
+                        type: 'POST',
+                        url: "/Admin/Discounts/ValidateDuplicateDiscount",
+                        data: newDiscount,
+                        success: function (data) {
+                            if (data !== "valid") {
+                                $('#DuplicateDiscountValidation').text(data);
+                                $('#DuplicateDiscountValidation').show();
+                            } else {
+                                $('#DuplicateDiscountValidation').text("");
+                                $('#DuplicateDiscountValidation').hide();
+                                console.log(data)
+                                $.ajax({
+                                    type: 'POST',
+                                    url: "/Admin/Discounts/Create",
+                                    data: newDiscount,
+                                    success: function (data) {
+                                        if (DiscountLocationType < 1) {
+                                            console.log("success");
+                                            location.href = "/Admin/Discounts";
+                                        }
+                                        else {
+                                            console.log(data);
+                                            if (data.length > 0) {
+                                                var formData = new FormData();
+                                                var image = $("#Image").get(0).files[0];
+                                                formData.append("image", image);
+                                                $.ajax({
+                                                    type: 'POST',
+                                                    url: "/Admin/Discounts/UploadImage/?groupIdentifier=" + data,
+                                                    data: formData,
+                                                    processData: false,
+                                                    contentType: false,
+                                                    success: function (data) {
+                                                        console.log("success");
+                                                        location.href = "/Admin/Discounts";
+                                                    },
+                                                    error: function (data) {
+
+                                                    }
+                                                });
+                                            }
+                                            else {
+                                                alert("لطفا فرم را کامل نمایید");
+                                            }
+                                        }
+                                        
+                                    },
+                                    error: function (data) {
+                                        console.log("error");
+                                        console.log(data);
+                                    }
+                                });
+                            }
+                            console.log("success");
+                            //location.href = "/Admin/Discounts";
+                        },
+                        error: function (data) {
+                            console.log("error");
+                            console.log(data);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,265 @@
+﻿@model BitakShop.Web.ViewModels.ProductListViewModel
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>تخفیف ها</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>تخفیف ها</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="container padding-bottom-3x mb-1">
+    <div class="row">
+        <!-- Products-->
+        <div class="col-xl-9 col-lg-8 order-lg-2">
+            <!-- Shop Toolbar-->
+            <section class="shop-toolbar pb-2 pt-2  mb-2 soft-shadow bg-white">
+                <div class="column pr-2 pl-2">
+                    <div class="shop-sorting text-right">
+                        <label for="sorting">ترتیب نمایش با : </label>
+
+                        <select onchange="GetGrid()" class="form-control" name="sorting" id="sorting">
+                            <option value="date" selected="selected">تاریخ ثبت</option>
+                            <option value="name">اسم محصول</option>
+                            <option value="price-high-to-low">قیمت از زیاد به کم</option>
+                            <option value="price-low-to-high">قیمت از کم به زیاد</option>
+                            <option value="sale">پر فروش ها</option>
+                        </select>&nbsp;
+                        <span class="text-muted"> درحال نمایش :&nbsp;</span><span>1 - 12 آیتم</span>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="shop-view">
+
+                        <a class="list-view" href="/Shop/ProductList?view=Grid" data-toggle="tooltip" title="نمایش لیستی ( شبکه ای )">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </a>
+                        <a class="grid-view" href="/Shop/ProductList?view=liner" data-toggle="tooltip" title="نمایش لیستی ( خطی )">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Products Grid Section -->
+            <div id="grid">
+                در حال بارگذاری ...
+            </div>
+
+
+
+
+        </div>
+        <!-- Sidebar          -->
+        <div class="col-xl-3 col-lg-4 order-lg-1">
+            <aside class="sidebar">
+                <div class="padding-top-2x hidden-lg-up"></div>
+                <!-- Widget Price Range-->
+                <section class="widget widget-categories widget-border pt-2 pb-3 mb-2 bg-white soft-shadow">
+                    <h3 class="widget-title">محدوده قیمت</h3>
+                    <div class="price-range-slider" data-start-min="0" data-start-max="1000000" data-min="0" data-max="3000000" data-step="1" onclick="FormatRangePrice()">
+                        <div class="ui-range-slider"></div>
+                        <footer class="ui-range-slider-footer">
+                            <div class="col-md-12 pb-3">
+                                <div class="ui-range-values">
+                                    <div class="ui-range-value-min">
+                                        از <span id="priceMinVal"></span>
+                                        <input type="hidden" id="min_price" name="min_price"> تومان
+                                    </div>&nbsp; تا &nbsp;
+                                    <div class="ui-range-value-max">
+                                        <span id="priceMaxVal"></span>
+                                        <input type="hidden" id="max_price" name="max_price">تومان
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-left">
+                                <button class="btn btn-outline-primary btn-sm" onclick="GetGrid()">فیلتر قیمت</button>
+                            </div>
+                        </footer>
+                    </div>
+                </section>
+                <!-- Widget Categories-->
+                <section class="widget widget-categories widget-border pt-2 pb-3 mb-2 bg-white soft-shadow">
+                    <h3 class="widget-title">دسته بندی های فروشگاه</h3>
+                    @if (ViewBag.ProductGroupName != null)
+                    {
+                        <h5>@ViewBag.ProductGroupName</h5>
+                    }
+                    <ul class="pl-0 mb-0">
+                        @foreach (var item in Model.ProductGroups)
+                        {
+                            <li><a href="/Shop/ProductList/@item.Id">@item.Title</a></li>
+                        }
+                    </ul>
+                </section>
+                <!-- Widget Brand Filter-->
+                <section class="widget widget-border pt-2 pb-3 mb-2 bg-white soft-shadow">
+                    <h3 class="widget-title">فیلتر بر اساس برندها</h3>
+                    @foreach (var brand in Model.Brands)
+                    {
+                        <label class="custom-control custom-checkbox d-block" for="b_@brand.Id">
+                            <input class="custom-control-input" type="checkbox"
+                                   id="b_@brand.Id"
+                                   onchange="GetGrid()"
+                                   value="@brand.Id"
+                                   name="brands">
+                            <span class="custom-control-indicator"></span>
+                            <span class="custom-control-description">
+                                @brand.Name &nbsp;
+                                <span class="text-muted"></span>
+                            </span>
+                        </label>
+                    }
+                </section>
+
+
+                @foreach (var feature in Model.Features.Where(f => f.SubFeatures.Any()))
+                {
+
+                    <section class="widget widget-border pt-2 pb-3 mb-2 bg-white soft-shadow">
+                        <h3 class="widget-title">فیلتر بر اساس @feature.Title</h3>
+                        @foreach (var subFeature in feature.SubFeatures)
+                        {
+                            <label class="custom-control custom-checkbox d-block" for="b_@subFeature.Id">
+                                <input class="custom-control-input" type="checkbox"
+                                       id="b_@subFeature.Id"
+                                       onchange="GetGrid()"
+                                       value="@subFeature.Id"
+                                       name="subFeatures">
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description">
+                                    @subFeature.Value &nbsp;
+                                    <span class="text-muted"></span>
+                                </span>
+                            </label>
+
+                        }
+                    </section>
+                }
+                <!-- Promo Banner-->
+                <section class="promo-box" style="background-image: url(/Content/client/images//banners/02.jpg);">
+                    <!-- Choose between .overlay-dark (#000) or .overlay-light (#fff) with default opacity of 50%. You can overrride default color and opacity values via 'style' attribute.--><span class="overlay-dark" style="opacity: .45;"></span>
+                    <div class="promo-box-content text-center padding-top-3x padding-bottom-2x">
+                        <h4 class="text-light text-thin text-shadow">بدلیجات مخصوص مهمانی با </h4>
+                        <h3 class="text-bold text-light text-shadow">تخفیف ویژه</h3><a class="btn btn-sm btn-primary" href="#">همین حالا خرید کنید</a>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<!-- Loading -->
+@section scripts
+{
+    <script>
+        var productPerPage = 12;
+
+        function GetGrid(page) {
+            $("#loading").show();
+            var pageNumber = 1;
+            if (page != null) {
+                pageNumber = page;
+            }
+            var sort = $("#sort").find(":selected").val();
+            var take = $("#take").find(":selected").val();
+            take = productPerPage;
+            var categoryId = @(Model.SelectedGroupId??0);
+            var searchString = '@ViewBag.SearchString';
+            var groupIdentifier = '@ViewBag.GroupIdentifier';
+            
+            var brands = [];
+            var priceFrom = parseInt($("#min_price").val());
+            var priceTo = parseInt($("#max_price").val());
+
+
+
+            $("input[name='brands']").map(function() {
+                if ($(this).prop("checked") === true) {
+                    brands.push(parseInt($(this).val()));
+                }
+            });
+            var subFeatures = [];
+            $("[name='subFeatures']").map(function() {
+                if ($(this).prop("checked") === true) {
+                    subFeatures.push(parseInt($(this).val()));
+                }
+            });
+
+            var grid = {
+                categoryId: categoryId,
+                searchString: searchString,
+                priceFrom: priceFrom,
+                priceTo: priceTo,
+                brands: brands.join('-'),
+                subFeatures: subFeatures.join('-'),
+                pageNumber: pageNumber,
+                take: take,
+                sort: sort,
+                discountGroupIdentifier:groupIdentifier
+            }
+            $.ajax({
+                type: 'GET',
+                url: '/ProductsGrid',
+                data: grid,
+                success: function (data) {
+                    $("#grid").html(data);
+                },
+                error: function(data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function() {
+                    $("#loading").hide();
+                }
+            });
+        }
+
+        var doc = document;
+        function FormatRangePrice() {
+            var txtMinVal = doc.getElementById("min_price");
+            var txtMaxVal = doc.getElementById("max_price");
+
+            var minVal = parseInt(txtMinVal.value);
+            var maxVal = parseInt(txtMaxVal.value);
+
+
+            var spnMinVal = doc.getElementById("priceMinVal");
+            var spnMaxVal = doc.getElementById("priceMaxVal");
+
+            spnMinVal.innerHTML = Number(minVal.toFixed(0)).toLocaleString();
+            spnMaxVal.innerHTML = Number(maxVal.toFixed(0)).toLocaleString();
+
+        }
+
+        $(document).ready(function () {
+            FormatRangePrice();
+            GetGrid();
+        });
+    </script>
+
+}
+
+
+
+
+
+
+

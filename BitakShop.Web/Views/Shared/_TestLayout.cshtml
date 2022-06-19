@@ -1,0 +1,466 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic Page Needs -->
+    <meta charset="utf-8">
+    <title>BitakShop | @ViewData["Title"]</title>
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link type="image/x-icon" href="~/Content/client/images/fav-icon.png" rel="icon">
+    <!-- CSS -->
+    <link rel="stylesheet" media="screen" href="~/Content/client/css/vendor.min.css">
+    <!-- Main Template Styles-->
+    <link id="mainStyles" rel="stylesheet" media="screen" href="~/Content/client/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel='stylesheet' href='https://k1ngzed.com/dist/swiper/swiper.min.css'>
+    <link rel='stylesheet' href='https://k1ngzed.com/dist/EasyZoom/easyzoom.css'>
+    <link rel="stylesheet" href="~/Content/client/css/shop-image.css">
+    <link id="mainStyles" rel="stylesheet" media="screen" href="~/Content/client/css/rtl.css">
+    <link rel="stylesheet" href="~/Content/client/css/fancy-slider/style.css">
+    <link rel="stylesheet" href="~/Content/Vendors/toastr/toastr.min.css" />
+
+
+    <script src="~/Content/client/js/modernizr.min.js"></script>
+</head>
+<!-- Body-->
+<body>
+
+    @Html.Action("HeaderSection", "Home", new { area = "" })
+
+
+    <!-- Off-Canvas Wrapper-->
+    <div class="offcanvas-wrapper">
+        @RenderBody()
+
+        <!-- Footer section start -->
+        @Html.Partial("_FooterPartial")
+        <!-- Footer section end -->
+
+    </div>
+    <!-- Back To Top Button--><a class="scroll-to-top-btn" href="#"><i class="icon-arrow-up"></i></a>
+    <!-- Backdrop-->
+    <div class="site-backdrop"></div>
+
+
+    <style>
+        .loading {
+            position: fixed;
+            z-index: 999999999;
+            height: 2em;
+            width: 2em;
+            overflow: visible;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+        }
+
+            /* Transparent Overlay */
+            .loading:before {
+                content: '';
+                display: block;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.3);
+            }
+
+            /* :not(:required) hides these rules from IE9 and below */
+            .loading:not(:required) {
+                /* hide "loading..." text */
+                font: 0/0 a;
+                color: transparent;
+                text-shadow: none;
+                background-color: transparent;
+                border: 0;
+            }
+
+                .loading:not(:required):after {
+                    content: '';
+                    display: block;
+                    font-size: 10px;
+                    width: 1em;
+                    height: 1em;
+                    margin-top: -0.5em;
+                    -webkit-animation: spinner 1500ms infinite linear;
+                    -moz-animation: spinner 1500ms infinite linear;
+                    -o-animation: spinner 1500ms infinite linear;
+                    animation: spinner 1500ms infinite linear;
+                    border-radius: 0.5em;
+                    -webkit-box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(0, 0, 0, 0.5) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+                    box-shadow: rgba(0, 0, 0, 0.75) 1.5em 0 0 0, rgba(0, 0, 0, 0.75) 1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.75) -1.5em 0 0 0, rgba(0, 0, 0, 0.75) -1.1em -1.1em 0 0, rgba(0, 0, 0, 0.75) 0 -1.5em 0 0, rgba(0, 0, 0, 0.75) 1.1em -1.1em 0 0;
+                }
+
+        /* Animation */
+
+        @@-webkit-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@-moz-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@-o-keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes spinner {
+            0% {
+                -webkit-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -ms-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -ms-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <!-- Loading -->
+    <script src="~/Content/client/js/vendor.min.js"></script>
+    <script src="~/Content/client/js/scripts.min.js"></script>
+    <script src="~/Content/client/js/fancy-slider/index.js"></script>
+
+    <script src='https://code.jquery.com/jquery-3.4.1.min.js'></script>
+    <script src='https://k1ngzed.com/dist/swiper/swiper.min.js'></script>
+    <script src='https://k1ngzed.com/dist/EasyZoom/easyzoom.js'></script>
+    <script src="~/Content/client/js/shopImage.js"></script>
+    <script src="~/Content/Vendors/toastr/toastr.min.js"></script>
+
+
+    <script src="~/Content/client/js/modernizr.js"></script>
+    @*<script src="/Content/client/js/countDown.js"></script>*@
+    <script src="~/Content/client/js/store.js"></script>
+    <script>
+        function AddToCart(id, mainFeature) {
+            var mainFeatureId = null;
+            if (mainFeature != null) {
+                mainFeatureId = mainFeature;
+            }
+            if (mainFeatureId === null) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Shop/AddToCart?productId=' + id,
+                    success: function (data) {
+                        console.log(data);
+                        var res = JSON.parse(data);
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",//"toast-top-full-width",//
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+
+                        if (res == "success")
+                            toastr.success("محصول به سبد اضافه شد");
+                        else if (res == "finished")
+                            toastr.info("محصول دیگری برای اضافه کردن به سبد خرید در انبار وجود ندارد");
+
+                        GetCart();
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/Shop/AddToCart?productId=' + id + '&mainFeatureId=' + mainFeatureId,
+                    success: function (data) {
+                        toastr.options = {
+                            "closeButton": true,
+                            "debug": false,
+                            "newestOnTop": false,
+                            "progressBar": false,
+                            "positionClass": "toast-top-right",//
+                            "preventDuplicates": false,
+                            "onclick": null,
+                            "showDuration": "300",
+                            "hideDuration": "1000",
+                            "timeOut": "5000",
+                            "extendedTimeOut": "1000",
+                            "showEasing": "swing",
+                            "hideEasing": "linear",
+                            "showMethod": "fadeIn",
+                            "hideMethod": "fadeOut"
+                        }
+
+                        toastr.success("محصول به سبد اضافه شد");
+
+                        GetCart();
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+        }
+        function RemoveFromCart(id, mainFeatureId, complete) {
+            $.ajax({
+                type: 'POST',
+                url: '/Shop/RemoveFromCart?productId=' + id + '&mainFeatureId=' + mainFeatureId + '&complete=' + complete,
+                success: function (data) {
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",//
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+
+                    toastr.info("محصول از سبد حذف شد");
+
+                    GetCart();
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+        }
+        function EmptyCart(reload) {
+            $.ajax({
+                type: 'POST',
+                url: '/Shop/EmptyCart',
+                success: function (data) {
+                    toastr.options = {
+                        "closeButton": true,
+                        "debug": false,
+                        "newestOnTop": false,
+                        "progressBar": false,
+                        "positionClass": "toast-top-right",//
+                        "preventDuplicates": false,
+                        "onclick": null,
+                        "showDuration": "300",
+                        "hideDuration": "1000",
+                        "timeOut": "5000",
+                        "extendedTimeOut": "1000",
+                        "showEasing": "swing",
+                        "hideEasing": "linear",
+                        "showMethod": "fadeIn",
+                        "hideMethod": "fadeOut"
+                    }
+
+                    toastr.info("سبد خالی شد!");
+                    if (reload) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                    GetCart();
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+        }
+        function GetCart() {
+            $.ajax({
+                type: 'GET',
+                url: '/Home/CartSection',
+                success: function (data) {
+                    $("#cartSection").html(data);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+            if ($("#CartTable") !== undefined) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Shop/CartTable',
+                    success: function (data) {
+                        $("#CartTable").html(data);
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+        }
+
+        function GetCategoriesMenu() {
+
+            var preLoader = '<div style="direction:rtl; text-align:right; color:#fff; padding:10px">در حال بارگذاری ...</div>';
+
+            $("#shop-categories").html(preLoader);
+            $.ajax({
+                type: 'GET',
+                url: '/Home/SideCategoriesMenu',
+                success: function (data) {
+                    $("#shop-categories").html(data);
+                },
+                error: function (data) {
+
+                },
+                complete: function () {
+
+                }
+            });
+        }
+        GetCategoriesMenu();
+    </script>
+    <script>
+    function AddToWishList(id) {
+        var userIsLoggedIn = '@(User.Identity.IsAuthenticated)';
+        if (userIsLoggedIn === 'False') {
+            location.href = "/Customer/Auth/Login";
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/Shop/AddToWishList?productId=' + id,
+                success: function (data) {
+                    alert('محصول مورد نظر به لیست علاقه مندی های شما افزوده شد');
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+        }
+    }
+    function removeFromWishList(id) {
+        $.ajax({
+                type: 'POST',
+                url: '/Shop/RemoveFromWishList?productId=' + id,
+            success: function (data) {
+                GetWishList();
+            },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+    }
+    function GetWishList() {
+        $.ajax({
+                type: 'GET',
+                url: '/Shop/WishListTable',
+                success: function (data) {
+                    $("#WishListTable").html(data);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+    }
+    </script>
+    <script>
+        $("#search-form").submit(function (e) {
+            e.preventDefault();
+            var searchString = $("#searchString").val();
+            location.href = '/Shop/ProductList/Search/' + searchString;
+        });
+    </script>
+    <!-- Not Found Page -->
+    <script>
+        $("#notFoundSearch").submit(function (e) {
+            e.preventDefault();
+            var searchString = $("#txtSearchString").val();
+            location.href = '/Shop/ProductList/Search/' + searchString;
+        });
+
+    </script>
+
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+

@@ -1,0 +1,27 @@
+﻿@model List<BitakShop.Web.ViewModels.LatestArticlesViewModel>
+
+<!-- Product Widgets-->
+<section class="mb-2" style="background:#fff">
+    <div class="row">
+        <div class="col-md-12 col-sm-12">
+            <div class="widget widget-featured-products widget-border">
+                <h3 class="widget-title">ویدجت اخبار و اعلامیه</h3>
+
+                @foreach (var item in Model)
+                {
+                    <!-- Entry-->
+                    <div class="entry">
+                        <div class="entry-thumb"><a href="shop-single.html"><img src="/Files/ArticleImages/Thumb/@item.Image" alt="@item.Title"></a></div>
+                        <div class="entry-content">
+                            <h4 class="entry-title"><a href="shop-single.html">@item.Title</a></h4>
+                            <span class="entry-meta">@item.PersianDate</span>
+                        </div>
+                    </div>
+                }
+
+                
+
+            </div>
+        </div>
+    </div>
+</section>

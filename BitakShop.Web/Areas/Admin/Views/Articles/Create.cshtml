@@ -1,0 +1,135 @@
+﻿@model BitakShop.Core.Models.Article
+
+@{
+    ViewBag.Title = "مقاله ها";
+}
+<input type="hidden" id="nav_active" value="article_control">
+<input type="hidden" id="nav_item_active" value="articles">
+@{
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">
+            <strong>خطا!</strong> @ViewBag.Message
+        </div>
+    }
+}
+<div class="col-lg-12">
+    <div class="card card-custom gutter-b">
+        <div class="card-header">
+            <h3 class="card-title">
+                افزودن مقاله
+            </h3>
+        </div>
+        @using (Html.BeginForm("Create", "Articles", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, new { })
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control " } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "form-text text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ArticleCategoryId, "دسته بندی", new { })
+                    <div class="col-md-5">
+                        @Html.DropDownList("ArticleCategoryId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ArticleCategoryId, "", new { @class = "form-text text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-label">تصویر</label>
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="image-input image-input-outline" id="article-image">
+                            <div class="image-input-wrapper" style="background-image: url(assets/media/users/100_1.jpg)"></div>
+
+                            <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="آپلود تصویر">
+                                <i class="fa fa-pen icon-sm text-muted"></i>
+                                <input type="file" name="ArticleImage" accept=".png, .jpg, .jpeg" />
+                                <input type="hidden" name="article_image_remove" />
+                            </label>
+
+                            <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="حذف تصویر">
+                                <i class="ki ki-bold-close icon-xs text-muted"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ShortDescription, new { })
+                    @Html.EditorFor(model => model.ShortDescription, new { htmlAttributes = new { @class = "form-control " } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "form-text text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, new { })
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control " } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "form-text text-danger" })
+                </div>
+                <div class="form-group">
+                    <label for="ArticleTags">برچسب ها</label>
+                    <input type="text" name="Tags" id="Tags" value="@ViewBag.Tags" placeholder="لطفا برچسب ها را با - از هم جدا کنید" class="form-control" />
+                </div>
+                @*<div id="headline-repeater" style="padding-top:50px">
+                        <div class="form-group row" id="headline-repeater">
+                            <label class="col-lg-2 col-form-label text-left">سر تیتر ها</label>
+                            <div data-repeater-list="ArticleHeadLines" class="col-lg-10">
+                                <div data-repeater-item class="form-group">
+                                    <div class="form-group col-lg-4">
+                                        <input class="form-control" type="text" name="Title" placeholder="عنوان">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger">
+                                            <i class="la la-trash-o"></i>حذف
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-4">
+                                <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-warning">
+                                    <i class="la la-plus"></i>افزودن سر تیتر
+                                </a>
+                            </div>
+                        </div>
+                    </div>*@
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">انصراف</a>
+                <input type="submit" value="ثبت" class="btn btn-primary mr-2" />
+            </div>
+        }
+    </div>
+</div>
+<style>
+    .image-input .image-input-wrapper {
+        width: 200px;
+    }
+</style>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="/ckeditor/adapters/jquery.js"></script>
+    <script>
+        $(function () {
+            $('#Description').ckeditor();
+
+        });
+        $('#headline-repeater').repeater({
+            initEmpty: true,
+            show: function () {
+                $(this).slideDown();
+            },
+
+            hide: function (deleteElement) {
+                var currentInstance = $(this).index();
+                var nextInstance = $(this).index() + 1;
+                $(this).slideUp(deleteElement);
+            }
+        });
+        new KTImageInput('article-image');
+    </script>
+}

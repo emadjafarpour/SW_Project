@@ -1,0 +1,113 @@
+﻿
+@model List<BitakShop.Infratructure.Dtos.Product.ProductWithPriceDto>
+
+
+<!-- Products Grid-->
+<section class="isotope-grid cols-3 pt-2 mb-2 soft-shadow bg-white">
+    <div class="gutter-sizer"></div>
+    <div class="grid-sizer"></div>
+
+    @if (Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <!-- Product-->
+            <div class="grid-item border-grid">
+                <div class="product-card">
+                    <a class="product-thumb mt-3" href="/Shop/Product/@item.Id"><img src="~/Files/ProductImages/Thumb/@item.Image" alt="@item.ShortTitle"></a>
+                    <h3 class="product-title"><a href="/Shop/Product/@item.Id">@item.ShortTitle</a></h3>
+                    <h4 class="product-price">
+
+                        @if (item.PriceAfterDiscount < item.Price)
+                        {
+                            <del>@item.Price.ToString("##,###") </del>
+                            <span>@item.PriceAfterDiscount.ToString("##,###") تومان</span>
+                        }
+                        else
+                        {
+                            <span>@item.Price.ToString("##,###") تومان</span>
+                        }
+
+                    </h4>
+                    <div class="product-buttons">
+                        <button class="btn btn-outline-secondary btn-sm btn-wishlist" data-toggle="tooltip" title="علاقه مندی" onclick="AddToWishList(@item.Id)"><i class="icon-heart"></i></button>
+                        @if (item.Price > 0 && item.PriceAfterDiscount > 0)
+                        {
+                            <button class="btn btn-outline-primary btn-sm" onclick="AddToCart(@item.Id)" >افزودن به سبد</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-primary btn-sm">عدم موجودی</button>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h4>محصولی یافت نشد</h4>
+    }
+
+</section>
+<!-- Pagination-->
+<nav class="pagination bg-white soft-shadow">
+    @if (ViewBag.CurrentPage > 1)
+    {
+        <div class="column text-right hidden-xs-down pr-2"><a class="btn btn-outline-secondary btn-sm" href="#" onclick="GetGrid(@(ViewBag.CurrentPage-1))"> قبلی &nbsp;<i class="icon-arrow-right"></i></a></div>
+    }
+    
+    <div class="column text-center">
+        <ul class="pages">
+            @{
+                int delta = 3;
+                int left = ViewBag.CurrentPage - delta;
+                int Right = ViewBag.CurrentPage + delta + 1;
+                bool areStartDotsAdded = false;
+                bool areEndDotsAdded = false;
+                string cssClass = "";
+                for (int i = 1; i <= ViewBag.PageCount; i++)
+                {
+                    if (i == ViewBag.CurrentPage)
+                    {
+                        cssClass = "active";
+                    }
+                    else
+                    {
+                        cssClass = "";
+                    }
+
+                    if (i == 1 || i == ViewBag.PageCount || Math.Abs(i - ViewBag.CurrentPage) < delta)
+                    {
+                        <li class="@cssClass"><a href="#" onclick="GetGrid(@i)">@i</a></li>
+                    }
+                    else
+                    {
+                        if (i < ViewBag.CurrentPage && !areStartDotsAdded)
+                        {
+                            areStartDotsAdded = true;
+                            <li>...</li>
+                        }
+                        else if (i > ViewBag.CurrentPage && !areEndDotsAdded)
+                        {
+                            areEndDotsAdded = true;
+                            <li>...</li>
+                        }
+                    }
+
+                }
+            }
+        </ul>
+    </div>
+
+    @if (ViewBag.CurrentPage < ViewBag.PageCount)
+    {
+        <div class="column text-left hidden-xs-down pl-2"><a class="btn btn-outline-secondary btn-sm" href="#" onclick="GetGrid(@(ViewBag.CurrentPage+1))"> بعدی &nbsp;<i class="icon-arrow-left"></i></a></div>
+    }
+
+</nav>
+
+<script src="/Content/client/js/vendor.min.js"></script>
+<script src="/Content/client/js/scripts.min.js"></script>
+

@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "دسته بندی های فروشگاه";
+}
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>دسته بندی ها</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>دسته بندی ها</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div class="container padding-bottom-2x mb-2 padding-top-2x soft-shadow bg-white">
+    <div class="row">
+        <!-- Categories-->
+        <div class="col-xl-9 col-lg-8 order-lg-2">
+            <!-- Promo banner-->
+            <div class="alert alert-image-bg alert-dismissible fade show text-center mb-4" style="background-image: url(/Content/client/images//banners/alert-bg.jpg);">
+                <span class="alert-close text-white" data-dismiss="alert"></span>
+                <div class="h3 text-medium text-white padding-top-1x padding-bottom-1x">
+                    <i class="icon-clock" style="font-size: 33px; margin-top: -5px;"></i>&nbsp;&nbsp;از امکانات جدید سایت بازدید کنید و تخفیف بگیرید&nbsp;&nbsp;&nbsp;
+                    <div class="mt-3 hidden-xl-up"></div><a class="btn btn-primary" href="/">نمایش تغییرات</a>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var item in ViewBag.ProductGroups)
+                {
+                    <div class="col-sm-6">
+                        <div class="card mb-30">
+                            <a class="card-img-tiles" href="/Shop/ProductList/@item.Id">
+                                <div class="inner">
+                                    <div class="main-img"><img src="~/Files/ProductGroupImages/Thumb/@item.Image" alt="@item."></div>
+                                    <div class="thumblist"><img src="~/Files/ProductGroupImages/Thumb/@item.Image" alt="Category"><img src="~/Files/ProductGroupImages/Thumb/@item.Image" alt="@item.Title"></div>
+                                </div>
+                            </a>
+                            <div class="card-body text-center">
+                                <h4 class="card-title">@item.Title</h4>
+                                <p class="text-muted"></p><a class="btn btn-outline-primary btn-sm" href="/Shop/ProductList/@item.Id">نمایش محصولات</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <!-- Sidebar          -->
+        <div class="col-xl-3 col-lg-4 order-lg-1">
+            <aside class="sidebar">
+                <div class="padding-top-2x hidden-lg-up"></div>
+                <section class="widget widget-categories widget-border pt-2 pb-3 mb-2 bg-white soft-shadow">
+                    <h3 class="widget-title">دسته بندی های فروشگاه</h3>
+                    <ul class="pl-0 mb-0">
+                        @foreach (var item in ViewBag.ProductGroups)
+                        {
+                            <li><a href="/Shop/ProductList/@item.Id">@item.Title</a></li>
+                        }
+                    </ul>
+                </section>
+            </aside>
+        </div>
+    </div>
+</div>
+
+

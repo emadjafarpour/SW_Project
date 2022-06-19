@@ -1,0 +1,95 @@
+﻿@model List<BitakShop.Web.ViewModels.ProductWithPriceViewModel>
+
+@{
+    if (ViewBag.ViewType == "sidebar")
+    {
+
+        <!-- Product Widgets-->
+        <section class="mb-2" style="background:#fff">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="widget widget-featured-products widget-border">
+                        <h3 class="widget-title"> جدیدترین محصولات بی تک شاپ</h3>
+
+
+                        @foreach (var item in Model)
+                        {
+                            <!-- Entry-->
+                            <div class="entry">
+                                <div class="entry-thumb"><a href="shop-single.html"><img src="/Files/ProductImages/Thumb/@item.Image" alt="@item.ShortTitle"></a></div>
+                                <div class="entry-content">
+                                    <h4 class="entry-title"><a href="/Shop/Product/@item.Id">@item.ShortTitle</a></h4>
+                                    <span class="entry-meta">
+                                        @if (item.PriceAfterDiscount < item.Price)
+                                        {
+                                            <del class="price old-price">@item.Price.ToString("##,###")</del>
+                                            <span class="price"> @item.PriceAfterDiscount.ToString("##,###") تومان</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="price">@item.Price.ToString("##,###") تومان</span>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+
+                        }
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+        <!-- Featured Products Carousel-->
+        <section class=" pr-2 pl-2 pt-2 pb-2 rounded-5 soft-shadow mb-2" style="background:#fff">
+            <h6 class="text-right border-title mb-3"> جدیدترین محصولات بی تک شاپ </h6>
+            <div class="owl-carousel" data-owl-carousel="{ &quot;nav&quot;: true, &quot;dots&quot;: true, &quot;margin&quot;: 10, &quot;responsive&quot;: {&quot;0&quot;:{&quot;items&quot;:1},&quot;576&quot;:{&quot;items&quot;:2},&quot;768&quot;:{&quot;items&quot;:3},&quot;991&quot;:{&quot;items&quot;:4},&quot;1200&quot;:{&quot;items&quot;:4}} }">
+
+                @foreach (var item in Model)
+                {
+                    <!-- Product-->
+                    <div class="grid-item">
+                        <div class="product-card">
+                            <div class="product-badge text-danger"></div><a class="product-thumb mt-3" href="/Shop/Product/@item.Id"><img src="/Files/ProductImages/Thumb/@item.Image" alt="@item.ShortTitle" img_src="@item.Image"></a>
+                            <h3 class="product-title"><a href="/Shop/Product/@item.Id">@item.ShortTitle</a></h3>
+                            <h4 class="product-price">
+                                @if (item.PriceAfterDiscount < item.Price)
+                                {
+                                    <del>@item.Price.ToString("##,###")</del>
+                                    <span class="prc">@item.PriceAfterDiscount.ToString("##,###")</span>
+                                    <span> تومان </span>
+                                }
+                                else
+                                {
+                                    <span class="prc">@item.PriceAfterDiscount.ToString("##,###")</span>
+                                    <span> تومان </span>
+                                }
+
+                            </h4>
+                            <div class="product-buttons">
+                                <button class="btn btn-outline-secondary btn-sm btn-wishlist" data-toggle="tooltip" title="علاقه مندی" onclick="AddToWishList(@item.Id)"><i class="icon-heart"></i></button>
+
+                                @if (item.Price > 0 && item.PriceAfterDiscount > 0)
+                                {
+                                    <button class="btn btn-outline-primary btn-sm Add-btn" cardId="0" onclick="AddToCart(@item.Id)">افزودن به سبد</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-primary btn-sm Add-btn" cardId="0" disabled>افزودن به سبد</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Product-->
+                }
+
+
+            </div>
+        </section>
+    }
+}

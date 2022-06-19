@@ -1,0 +1,31 @@
+﻿@model BitakShop.Web.ViewModels.CartModel
+@{
+    ViewBag.Title = "سبد خرید";
+}
+
+
+<div class="bg-white">
+
+    <!-- Page Title-->
+    <div class="page-title">
+        <div class="container">
+            <div class="column">
+                <h1>سبد خرید </h1>
+            </div>
+            <div class="column">
+                <ul class="breadcrumbs">
+                    <li>
+                        <a href="/">خانه</a>
+                    </li>
+                    <li class="separator">&nbsp;</li>
+                    <li>سبد خرید</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container padding-bottom-3x mb-1">
+        @Html.Action("CartTable", "Shop", new { area = "" })
+    </div>
+</div>
+

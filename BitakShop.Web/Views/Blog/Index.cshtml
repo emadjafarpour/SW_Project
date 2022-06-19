@@ -1,0 +1,179 @@
+﻿@model List<BitakShop.Web.ViewModels.LatestArticlesViewModel>
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>وبلاگ</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>وبلاگ</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Page Content-->
+<div class="container padding-bottom-3x mb-1">
+    <div class="row">
+        <!-- Blog Posts-->
+        <div class="col-xl-9 col-lg-8 order-lg-2 text-right">
+
+            @{
+                if (Model.Count == 0)
+                {
+                    <div class="row bg-white soft-shadow pt-3 mb-3">
+                        <div class="alert alert-warning col-lg-12 mb-20">
+                            هیچ مطلبی یافت نشد!
+                        </div>
+                    </div>
+                }
+            }
+
+            @foreach (var item in Model)
+            {
+                <!-- Post-->
+                <article class="row bg-white soft-shadow pt-3 mb-3">
+                    <div class="col-md-3">
+                        <ul class="post-meta">
+                            <li><i class="icon-clock"></i><a>&nbsp; @item.PersianDate</a></li>
+                            <li><i class="icon-head"></i>&nbsp; @item.Author</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-9 blog-post">
+                        <a class="post-thumb" href="/Blog/Article/@item.Id/@item.Title.Replace(' ','-')"><img src="~/Files/ArticleImages/Thumb/@item.Image" alt="Post"></a>
+                        <h3 class="post-title"><a href="/Blog/Article/@item.Id/@item.Title.Replace(' ','-')">@item.Title</a></h3>
+                        <p>
+                            @item.ShortDescription
+                            <a href='/Blog/Article/@item.Id/@item.Title.Replace(' ','-')' class='text-medium'> بیشتر بخوانید </a>
+                        </p>
+                    </div>
+                </article>
+            }
+
+
+            @if (ViewBag.PageCount > 0)
+            {
+                <div class="row bg-white soft-shadow  mb-3">
+                    <nav class="pagination bg-white soft-shadow">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <div class="column text-right hidden-xs-down pr-2"><a class="btn btn-outline-secondary btn-sm" href="/Blog?pageNumber=@(ViewBag.CurrentPage - 1)@(ViewBag.CategoryId != null ? $"&category={ViewBag.CategoryId}" : null)@(ViewBag.SearchString != null ? $"&searchString={ViewBag.SearchString}" : null)"> قبلی &nbsp;<i class="icon-arrow-right"></i></a></div>
+                        }
+
+                        <div class="column text-center">
+                            <ul class="pages">
+                                @{
+                                    int delta = 3;
+                                    int left = ViewBag.CurrentPage - delta;
+                                    int Right = ViewBag.CurrentPage + delta + 1;
+                                    bool areStartDotsAdded = false;
+                                    bool areEndDotsAdded = false;
+                                    string cssClass = "";
+                                    for (int i = 1; i <= ViewBag.PageCount; i++)
+                                    {
+                                        if (i == ViewBag.CurrentPage)
+                                        {
+                                            cssClass = "active";
+                                        }
+                                        else
+                                        {
+                                            cssClass = "";
+                                        }
+
+                                        if (i == 1 || i == ViewBag.PageCount || Math.Abs(i - ViewBag.CurrentPage) < delta)
+                                        {
+                                            <li class="@cssClass"><a href="/Blog?pageNumber=@i@(ViewBag.CategoryId != null ? $"&category={ViewBag.CategoryId}" : null)@(ViewBag.SearchString != null ? $"&searchString={ViewBag.SearchString}" : null)">@i</a></li>
+                                        }
+                                        else
+                                        {
+                                            if (i < ViewBag.CurrentPage && !areStartDotsAdded)
+                                            {
+                                                areStartDotsAdded = true;
+                                                <li>...</li>
+                                            }
+                                            else if (i > ViewBag.CurrentPage && !areEndDotsAdded)
+                                            {
+                                                areEndDotsAdded = true;
+                                                <li>...</li>
+                                            }
+                                        }
+
+                                    }
+                                }
+                            </ul>
+                        </div>
+
+
+                        @if (ViewBag.CurrentPage < ViewBag.PageCount)
+                        {
+                            <div class="column text-left hidden-xs-down pl-2"><a class="btn btn-outline-secondary btn-sm" href="/Blog?pageNumber=@(ViewBag.CurrentPage + 1)@(ViewBag.CategoryId != null ? $"&category={ViewBag.CategoryId}" : null)@(ViewBag.SearchString != null ? $"&searchString={ViewBag.SearchString}" : null)"> بعدی &nbsp;<i class="icon-arrow-left"></i></a></div>
+                        }
+
+                    </nav>
+                </div>
+            }
+
+
+
+        </div>
+
+
+        <!-- Sidebar          -->
+        <div class="col-xl-3 col-lg-4">
+            <aside class="sidebar">
+                <div class="padding-top-2x hidden-lg-up"></div>
+                <!-- Widget Search-->
+                <section class="widget bg-white soft-shadow pt-2 pb-2 pr-2 pl-2 mb-2">
+                    <form method="get" action="/Blog" id="form" class="input-group form-group">
+                        <span class="input-group-btn">
+                            <button type="submit"><i class="icon-search"></i></button>
+                        </span>
+                        <input name="searchString" title="searchString" value="@ViewBag.SearchString" class="form-control" type="search" placeholder="جستجو در وبلاگ">
+                    </form>
+                </section>
+
+
+
+
+                @Html.Action("TopArticlesSection", "Blog", new { take = 3 })
+                @Html.Action("ArticleCategoriesSection", "Blog")
+
+
+
+                @{
+                    if (ViewBag.SidebarImages != null)
+                    {
+                        if (!string.IsNullOrEmpty(ViewBag.SidebarImages[4].Image))
+                        {
+                            <!-- Promo Banner-->
+                            <section class="promo-box soft-shadow" style="background-image: url(/Files/StaticContentImages/Image/@ViewBag.SidebarImages[4].Image);">
+                                <!-- Choose between .overlay-dark (#000) or .overlay-light (#fff) with default opacity of 50%. You can overrride default color and opacity values via 'style' attribute.--><span class="overlay-dark" style="opacity: .35;"></span>
+                                <div class="promo-box-content text-center padding-top-2x padding-bottom-2x">
+                                    <h3 class="text-bold text-light text-shadow">
+                                        @Html.Raw(@ViewBag.SidebarImages[4].ShortDescription)
+                                    </h3>
+                                    <a class="btn btn-sm btn-primary" href="@ViewBag.SidebarImages[4].Link">همین حالا بخرید</a>
+                                </div>
+                            </section>
+                        }
+
+                    }
+                }
+
+            </aside>
+        </div>
+    </div>
+</div>
+
+
+
+
+

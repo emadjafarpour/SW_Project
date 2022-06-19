@@ -1,0 +1,14 @@
+﻿@model List<BitakShop.Core.Models.Partner>
+
+<!-- Popular Brands-->
+<section class="bg-faded padding-top-2x padding-bottom-4x" style="background:url(/Content/client/images/background/brand-pattern.jpg);border:solid 1px #e1e7ec">
+    <div class="container">
+        <h5 class="text-center mb-30 pb-2">برند ها و همکاران ما</h5>
+        <div class="owl-carousel" data-owl-carousel="{ &quot;nav&quot;: false, &quot;dots&quot;: true, &quot;loop&quot;: true, &quot;autoplay&quot;: true, &quot;autoplayTimeout&quot;: 4000, &quot;responsive&quot;: {&quot;0&quot;:{&quot;items&quot;:2}, &quot;470&quot;:{&quot;items&quot;:3},&quot;630&quot;:{&quot;items&quot;:4},&quot;991&quot;:{&quot;items&quot;:5},&quot;1200&quot;:{&quot;items&quot;:6}} }">
+            @foreach (var item in Model)
+            {
+                <img class="d-block w-110  m-auto" src="/Files/PartnersImages/@item.Image" data-toggle="tooltip" title="@item.Title" alt="@item.Title">
+            }
+        </div>
+    </div>
+</section>

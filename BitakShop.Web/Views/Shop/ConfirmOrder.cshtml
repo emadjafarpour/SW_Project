@@ -1,0 +1,134 @@
+﻿@model BitakShop.Web.ViewModels.CartModel
+
+
+@{
+    ViewBag.Title = "تایید نهایی";
+}
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>بازبینی نهایی </h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>
+                    <a href="/Shop/Checkout/?invoiceNumber=@ViewBag.InvoiceNumber">سبد خرید</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>بازبینی نهایی </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Page Content-->
+<div class="container padding-bottom-3x mb-2">
+    <div class="row">
+        <!-- Checkout Adress-->
+        <div class="col-xl-9 col-lg-8 bg-white pt-3 pb-3 soft-shadow text-right">
+            <div class="checkout-steps">
+                <a>1. آدرس مشتری</a>
+                <a><span class="angle"></span>2. نحوه پرداخت</a>
+                <a class="active"><span class="angle"></span>3. بازبینی</a>
+            </div>
+            <h5 class="text-right mb-4">بازبینی نهایی</h5>
+            <hr class="padding-bottom-2x">
+
+            <div class="table-responsive shopping-cart text-center">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>نام کالا</th>
+                            <th class="text-center">تعداد</th>
+                            <th class="text-center">جمع قیمت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="product-item">
+                                        <a class="product-thumb" href="href="/Shop/Product/@item.Id""><img src="~/Files/ProductImages/Thumb/@item.Image" alt="@item.ProductName"></a>
+                                        <div class="product-info text-center">
+                                            <h4 class="product-title "><a href="/Shop/Product/@item.Id">@item.ProductName</a></h4>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center text-lg text-medium">@item.Quantity</td>
+                                <td class="text-center text-lg text-medium">@item.Price</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="shopping-cart-footer">
+                <div class="column text-left">
+                    <div class="text-sm">جمع قیمت : <span class="text-medium">@ViewBag.PriceBeforeDiscount.ToString("##,###")</span></div>
+                    <div class="text-sm">مبلغ تخفیف : <span class="text-medium">@ViewBag.DiscountAmount.ToString("##,###")</span></div>
+                    <div>
+                        قیمت نهایی : <span class="text-medium">
+                            @{
+                                var val = ViewBag.PriceBeforeDiscount - ViewBag.DiscountAmount;
+                            }
+                            @val.ToString("##,###")
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row padding-top-1x mt-3">
+                <div class="col-sm-6 ">
+                    <h5>اطلاعات ارسال سفارش:</h5>
+                    <ul class="list-unstyled">
+                        <li><span class="text-muted">نام: </span>@ViewBag.CustomerInfoView.Name</li>
+                        <li><span class="text-muted">آدرس : </span>@ViewBag.CustomerInfoView.Address</li>
+                        <li><span class="text-muted">شماره: </span>@ViewBag.CustomerInfoView.Phone</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="checkout-footer margin-top-1x">
+                <div class="column hidden-xs-down text-right"><a class="btn btn-outline-secondary" href="/Shop/PaymentMethod/?invoiceNumber=@ViewBag.InvoiceNumber"><i class="icon-arrow-right"></i>&nbsp; برگشت </a></div>
+                <div class="column text-left">
+                    <form action="/Payment/InitPay" method="post">
+                        <input type="hidden" value="@ViewBag.InvoiceNumber" name="InvoiceNumber" />
+                        <input type="hidden" value="@ViewBag.BankGatewayId" name="BankGatewayId" />
+                        <button class="btn btn-primary" type="submit">تکمیل خرید</button>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+        <!-- Sidebar          -->
+        <aside class="col-md-3 col-sm-4 order-lg-1" style="padding-left:7px">
+            @if (ViewBag.SidebarImages != null)
+            {
+                if (!string.IsNullOrEmpty(ViewBag.SidebarImages[1].Image))
+                {
+                    <section class="alert alert-no-padding alert-image-bg alert-dismissible fade show text-center mb-2 soft-shadow" data-dismiss="alert">
+                        <span></span>
+                        <img src="~/Files/StaticContentImages/Image/@ViewBag.SidebarImages[1].Image" />
+                    </section>
+                }
+
+            }
+            <!-- Product Widgets-->
+            <!-- Latest Product Section Start -->
+            @Html.Action("LatestProductsSection", "Home", new { take = 8 })
+            <!-- Latest Product Section End -->
+
+        </aside>
+    </div>
+</div>
+
+

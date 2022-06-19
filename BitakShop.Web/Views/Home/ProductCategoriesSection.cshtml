@@ -1,0 +1,37 @@
+﻿<!--Top Category-->
+<section class="pr-2 pl-2 pt-2 pb-2 rounded-5 soft-shadow mb-2" style="background:#fff">
+    <h6 class="text-right border-title mb-3"> نمایش دسته های دوست داشتنی </h6>
+    <div class="row">
+
+        @{
+            int counter = 0;
+            foreach (var item in ViewBag.MainProductGroups)
+            {
+                counter++;
+                if (counter > 3) { break; }
+
+
+
+                <div class="col-md-4 col-sm-6">
+                    <div class="card mb-30">
+                        <a class="card-img-tiles" href="/Shop/ProductList/@item.Id">
+                            <div class="inner">
+                                <div class="main-img"><img src="~/Files/ProductGroupImages/Thumb/@item.Image" alt="@item.Title"></div>
+                                <div class="thumblist"><img src="~/Files/ProductGroupImages/Thumb/@item.Image" alt="@item.Title"><img src="~/Files/ProductGroupImages/Thumb/@item.Image" alt="@item.Title"></div>
+                            </div>
+                        </a>
+                        <div class="card-body text-center">
+                            <h4 class="card-title">@item.Title</h4>
+                            <p class="text-muted"></p><a class="btn btn-outline-primary btn-sm" href="/Shop/ProductList/@item.Id">نمایش محصولات</a>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
+    </div>
+    <div class="text-center"><a class="btn btn-secondary margin-top-none" href="/Shop/ProductCategories">دیدن همه دسته ها</a></div>
+</section>
+
+
+

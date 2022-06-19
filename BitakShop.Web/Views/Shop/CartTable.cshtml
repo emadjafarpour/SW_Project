@@ -1,0 +1,150 @@
+﻿@model BitakShop.Web.ViewModels.CartModel
+
+@if (ViewBag.Errors.Count > 0)
+{
+    <div class="alert alert-danger">
+        @foreach(var item in ViewBag.Errors)
+        {
+            <div>@item</div>
+        }
+    </div>
+}
+
+<div class="table-responsive shopping-cart">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>نام محصول</th>
+                <th class="text-center">تعداد / مقدار</th>
+                <th class="text-center">قیمت</th>
+                <th class="text-center">تخفیف</th>
+                <th class="text-center">
+                    @if (!ViewBag.OrderExists)
+                    {
+                        <a class="btn btn-sm btn-outline-danger" onclick="EmptyCart(true)">خالی کردن سبد</a>
+                    }
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>
+                        <div class="product-item">
+                            <a class="product-thumb" href="/Shop/Product/@item.Id"><img src="~/Files/ProductImages/Thumb/@item.Image" alt="@item.ProductName"></a>
+                            <div class="product-info ">
+                                <h4 class="product-title"><a href="/Shop/Product/@item.Id">@item.ProductName</a></h4>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="count-input">
+                            @if (!ViewBag.OrderExists)
+                            {
+                                <span class="icon-plus pointer" onclick="AddToCart(@item.Id,@item.MainFeatureId)"></span>
+                                <span class="cart-product-count">@item.Quantity</span>
+                                <span class="icon-minus pointer" onclick="RemoveFromCart(@item.Id,@item.MainFeatureId, 'false')"></span>
+                            }
+                            else
+                            {
+                                <span class="cart-product-count">@item.Quantity</span>
+                            }
+                        </div>
+                    </td>
+                    @{
+                        var offAmountStr = item.OffAmount >= 0 ? item.OffAmount.ToString("##,###") + " تومان" : "_";
+                    }
+                    <td class="text-center text-lg text-medium font-small">@item.Price.ToString("##,###") تومان</td>
+                    <td class="text-center text-lg text-medium font-small">@offAmountStr</td>
+                    <td class="text-center">
+                        @if (!ViewBag.OrderExists)
+                        {
+                            <a class="remove-from-cart" onclick="RemoveFromCart(@item.Id,@item.MainFeatureId, 'true')" data-toggle="tooltip" title="حذف از سبد"><i class="icon-cross"></i></a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @{
+        if (Model.CartItems.Count < 1)
+        {
+            <div class="empty-cart-message"><i class="icon-bag"></i> سبد خالی است!</div>
+        }
+    }
+
+</div>
+
+
+
+
+@if (ViewBag.Errors.Count < 1)
+{
+    <div class="shopping-cart-footer">
+        <div class="column text-right">
+            @if (ViewBag.DiscountCode == "")
+            {
+                <div class="coupon-form">
+                    <input class="form-control form-control-sm" type="text" id="txtDiscountCode" name="txtDiscountCode" placeholder="کد کوپن خرید">
+                    <button class="btn btn-outline-primary btn-sm btn-discount" onclick="ApplyDiscountCode(event, @ViewBag.InvoiceNumber)">اعمال کوپن خرید</button>
+
+                    <div class="discount-message"></div>
+                </div>
+            }
+            else
+            {
+                <div class="coupon-form">
+                    <input class="form-control form-control-sm" type="text" id="txtDiscountCode" name="txtDiscountCode" value="@ViewBag.DiscountCode" placeholder="کد کوپن خرید"  readonly="readonly">
+
+                    <div class="discount-message"><div class="alert alert-info">قبلا کد تخفیف به این سفارش اعمال کرده اید</div></div>
+                </div>
+            }
+        </div>
+        <div class="column text-lg text-left">
+            <div>
+                @{
+                    var overallPrice = ViewBag.DiscountAmount + Model.TotalPrice;
+                    var strOverallPrice = string.IsNullOrEmpty(overallPrice.ToString("##,###")) ? "0" : overallPrice.ToString("##,###");
+                }
+                جمع قیمت: <span class="font-small">@strOverallPrice تومان</span>
+            </div>
+            <div>
+                @{
+                    var discountAmount = ViewBag.DiscountAmount ?? 0;
+                    var strDiscount = string.IsNullOrEmpty(discountAmount.ToString("##,###")) ? "0" : discountAmount.ToString("##,###");
+                }
+                تخفیف: <span id="tdDiscountAmount">@strDiscount تومان</span>
+            </div>
+            <div>
+                @{
+                    var totalPrice = overallPrice - discountAmount;
+                    var strTotalPrice = string.IsNullOrEmpty(totalPrice.ToString("##,###")) ? "0" : totalPrice.ToString("##,###");
+                }
+                قیمت نهایی: <span class="text-medium finalPrice">@strTotalPrice تومان</span>
+            </div>
+        </div>
+    </div>
+    <div class="shopping-cart-footer ">
+        <div class="column text-right">
+            <a class="btn btn-outline-secondary" href="/Shop"><i class="icon-arrow-right"></i>&nbsp; برگشت به فروشگاه </a>
+        </div>
+        <div class="column text-left">
+            <form action="/Shop/Checkout" method="post">
+                <input type="hidden" name="DiscountCode" id="DiscountCode" value="@ViewBag.DiscountCode" readonly="readonly" />
+                <input type="hidden" name="InvoiceNumber" id="InvoiceNumber" value="@ViewBag.InvoiceNumber" readonly="readonly" />
+                @if (Model.CartItems.Any())
+                {
+                    <button class="btn btn-success" type="submit"><span class="hidden-xs-down">ادامه &nbsp;</span><i class="icon-arrow-left"></i></button>
+                }
+            </form>
+
+        </div>
+    </div>
+}
+
+

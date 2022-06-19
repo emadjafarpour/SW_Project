@@ -1,0 +1,183 @@
+﻿
+@{Html.RenderPartial("_FloatLogin");}
+
+<!-- Off-Canvas Category Menu-->
+<div class="offcanvas-container" id="shop-categories">
+</div>
+<!-- Off-Canvas Mobile Menu-->
+<div class="offcanvas-container" id="mobile-menu">
+    <a class="account-link" href="#">
+        <div class="user-ava"><img src="~/Files/UserAvatars/user-avatar.png"></div>
+        <div class="user-info">
+            <h6 class="user-name">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <span>@(User.Identity.Name)</span>
+                }
+                else
+                {
+                    <span>کاربر مهمان</span>
+                }
+            </h6>
+            <span class="text-sm text-white opacity-60">خوش آمدید</span>
+        </div>
+    </a>
+    <nav class="offcanvas-menu">
+        <ul class="menu">
+            <li class="has-children active">
+                <span><a href="/"><span>خانه</span></a></span>
+
+            </li>
+            <li class="has-children active">
+                <span><a href="/Shop/ProductList"><span>محصولات</span></a></span>
+
+            </li>
+            <li class="has-children active">
+                <span><a href="/Blog"><span>وبلاگ</span></a></span>
+
+            </li>
+            <li class="has-children active">
+                <span><a href="/AboutUs"><span>درباره ما</span></a></span>
+
+            </li>
+            <li class="has-children active">
+                <span><a href="/ContactUs"><span>تماس با ما</span></a></span>
+
+            </li>
+
+
+        </ul>
+    </nav>
+</div>
+<!-- Topbar-->
+
+<div class="topbar">
+    <div class="topbar-column">
+        <a class="hidden-md-down" href="tel:@ViewBag.Phone.Title">
+            <i class="glyphicon-phone"></i>&nbsp; پشتیبانی 24 ساعته : @ViewBag.Phone.Title
+        </a>
+        <a href="/AboutUs" class="hidden-md-down">
+            <i class="icon-mail"></i>&nbsp; درباره ما
+        </a>
+        <a href="/ContactUs" class="hidden-md-down">
+            <i class="icon-bell"></i>&nbsp; تماس با ما
+        </a>
+        @{
+            var socialMedias = ViewBag.SocialMedia as List<BitakShop.Core.Models.StaticContentDetail>;
+            if (socialMedias != null)
+            {
+                foreach (var item in socialMedias)
+                {
+                <a class="social-button sb-@item.Title shape-none sb-dark" href="@item.Link" target="_blank">
+                    <i class="socicon-@item.Title"></i>
+                </a>
+                    }
+                }
+            }
+    </div>
+    <div class="topbar-column">
+
+    </div>
+</div>
+<!-- Navbar-->
+<!-- Remove "navbar-sticky" class to make navigation bar scrollable with the page.-->
+
+<header class="navbar navbar-sticky">
+    <!-- Search-->
+    <form class="site-search search-form" method="get" id="search-form">
+        <input type="text" name="searchString" id="searchString" placeholder="جستجو در محصولات وب سایت . . .">
+        <div class="search-tools"><span class="clear-search hidden-xs-down">پاک کردن</span><span class="close-search"><i class="icon-cross"></i></span></div>
+    </form>
+    <div class="site-branding">
+        <div class="inner">
+            <!-- Off-Canvas Toggle (#shop-categories)--><a class="offcanvas-toggle cats-toggle" href="#shop-categories" data-toggle="offcanvas"></a>
+            <!-- Off-Canvas Toggle (#mobile-menu)--><a class="offcanvas-toggle menu-toggle " href="#mobile-menu" data-toggle="offcanvas"></a>
+            <!-- Site Logo--><a class="site-logo" href="/"><img src="~/Content/client/images/logo/logo.png" alt="Unishop"></a>
+        </div>
+    </div>
+    <!-- Main Navigation-->
+    <nav class="site-menu">
+        <ul>
+            <li class="has-megamenu @Html.RouteIf("Home", "Index", "active")">
+                <a href="/"><span>خانه</span></a>
+
+            </li>
+            <li class="@Html.RouteIf("Shop", "Index", "active")">
+                <a href="/Shop/ProductList"><span>محصولات</span></a>
+
+            </li>
+
+            <li class="@Html.RouteIf("Blog", "Index", "active")">
+                <a href="/Blog"><span>وبلاگ</span></a>
+
+            </li>
+            <li class="has-megamenu @Html.RouteIf("Home", "About", "active")">
+                <a href="/AboutUs"><span>درباره ما</span></a>
+
+            </li>
+            <li class="@Html.RouteIf("Home", "Contact", "active")">
+                <a href="/ContactUs"><span>تماس با ما</span></a>
+            </li>
+
+
+        </ul>
+    </nav>
+    <!-- Toolbar-->
+    <div class="toolbar">
+        <div class="inner">
+            <div class="tools">
+                <div class="search"><i class="icon-search"></i></div>
+                <div class="account">
+
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+
+                        <a href="/Customer/Dashboard"></a><i class="icon-head"></i>
+                        <ul class="toolbar-dropdown">
+                            <li class="sub-menu-user">
+                                <div class="user-ava">
+                                    <img src="/Files/UserAvatars/user-avatar.png" alt="@User.Identity.Name">
+                                </div>
+                                <div class="user-info">
+                                    <h6 class="user-name">@User.Identity.Name</h6>
+                                </div>
+                            </li>
+                            <li><a href="/Customer/Dashboard/EditMyProfile">مشخصات من</a></li>
+                            <li><a href="/Customer/Dashboard/Invoices">لیست سفارشات</a></li>
+                            <li><a href="/Customer/Wishlist">علاقه مندیها</a></li>
+                            <li class="sub-menu-separator"></li>
+                            <li>
+                                <form id="logoutForm" action="/Customer/Auth/LogOff" method="post"></form>
+                                <a href="javascript:document.getElementById('logoutForm').submit()"> <i class="icon-lock"></i>خروج</a>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <a href="#"></a><i class="icon-head"></i>
+                        <ul class="toolbar-dropdown">
+                            <li class="sub-menu-user">
+                                <div class="user-ava">
+                                    <img src="/Files/UserAvatars/user-avatar.png" alt="Daniel Adams">
+                                </div>
+                                <div class="user-info">
+                                    <h6 class="user-name">کاربر مهمان</h6><span class="text-xs text-muted"></span>
+                                </div>
+                            </li>
+                            <li class="sub-menu-separator"></li>
+                            <li><a href="/Customer/Auth/Login" data-toggle="modal" data-target="#modalLogin"><i class="icon-unlock"></i>صفحه ورود</a></li>
+                            <li><a href="/Customer/Auth/Register"> <i class="icon-head"></i>ثبت نام</a></li>
+                        </ul>
+                    }
+
+                </div>
+                <div class="cart" id="cartSection">
+                    @Html.Action("CartSection", "Home")
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+

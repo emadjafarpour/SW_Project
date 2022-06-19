@@ -1,0 +1,59 @@
+﻿@model BitakShop.Core.Models.Invoice
+@{
+    ViewBag.Title = "پرداخت موفق";
+}
+
+
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>پرداخت موفق</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>
+                    <a href="/">فروشگاه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>پرداخت موفق</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="message-wrapper">
+
+    <div class="message-header success-message">
+        <i class="icon-check"></i>
+        <h4>پرداخت با موفقیت انجام پذیرفت</h4>
+    </div>
+
+    <div class="message-body">
+        <p>
+
+            <b>سفارش شما ثبت نهایی گردید. در صورت بروز مشکل و یا تمایل به پیگیری سفارش خود می توانید از کد زیر استفاده کنید:</b>
+            <br />
+            <div>
+                <input type="text" class="form-control" value="@Model.InvoiceNumber" style="cursor:text" readonly />
+            </div>
+
+        </p>
+    </div>
+
+    <div class="message-bottom">
+        <a class="btn btn-outline-secondary" href="/Customer/Dashboard/Invoices"><i class="icon-arrow-right"></i>&nbsp; مشاهده سفارشات </a>
+    </div>
+
+</div>
+
+
+

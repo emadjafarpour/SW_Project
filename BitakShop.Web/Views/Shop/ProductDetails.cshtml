@@ -1,0 +1,423 @@
+﻿@using BitakShop.Core.Utility
+@model BitakShop.Web.ViewModels.ProductDetailsViewModel
+@{
+    ViewBag.Title = "ProductDetails";
+}
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>جزئیات محصول</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>
+                    <a href="/Shop/ProductList">فروشگاه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>جزئیات محصول</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<!-- Page Content-->
+<div class="container padding-bottom-3x padding-top-1x mb-3 soft-shadow bg-white">
+    <div class="row">
+        <!-- Poduct Gallery-->
+        <div class="col-md-6">
+            <div class="product__carousel">
+
+                <!-- Swiper and EasyZoom plugins start -->
+                <div class="swiper-container gallery-top">
+                    <div class="swiper-wrapper">
+
+                        @foreach (var item in Model.ProductGalleries)
+                        {
+                            <div class="swiper-slide easyzoom easyzoom--overlay">
+                                <a href="/Files/ProductImages/ProductGallery/@item.Image">
+                                    <img src="/Files/ProductImages/ProductGallery/@item.Image" alt="@item.Title" />
+                                </a>
+                            </div>
+                        }
+
+                    </div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next swiper-button-white"></div>
+                    <div class="swiper-button-prev swiper-button-white"></div>
+                </div>
+                <div class="swiper-container gallery-thumbs">
+                    <div class="swiper-wrapper">
+
+                        @foreach (var item in Model.ProductGalleries)
+                        {
+                            <div class="swiper-slide">
+                                <img src="/Files/ProductImages/ProductGallery/@item.Image" alt="@item.Title">
+                            </div>
+                        }
+
+                    </div>
+                </div>
+                <!-- Swiper and EasyZoom plugins end -->
+            </div>
+        </div>
+        <!-- Product Info-->
+        <div class="col-md-6 text-right pl-4">
+            <div class="padding-top-2x mt-2 hidden-md-up"></div>
+            @{ int rate = 0;}
+            <div class="rating-stars">
+                @{
+                    rate = (Model.Product.Rate < 6 ? Model.Product.Rate : 5);
+                    rate = (rate > 0 ? rate : 0);
+                    for (int rIndex = 0; rIndex < rate; rIndex++)
+                    {
+                        <i class="icon-star filled"></i>
+                    }
+                    for (int rIndex = rate; rIndex < 5; rIndex++)
+                    {
+                        <i class="icon-star"></i>
+                    }
+                }
+            </div>
+            <span class="text-muted align-middle">&nbsp;&nbsp;@rate | از @Model.ProductComments.Count دیدگاه مشتری</span>
+            <h3 class="padding-top-1x text-normal font-orange">@Model.Product.ShortTitle</h3>
+            <span class="h4 d-block mb-3">
+                @if (Model.PriceAfterDiscount < Model.Price)
+                {
+                    <del class="text-muted text-normal"><span id="productPrice">@Model.Price.ToString("##,###")</span></del>
+                    <span class=""><span id="productPriceAfterDiscount">@Model.PriceAfterDiscount.ToString("##,###")</span> تومان</span>
+                }
+                else
+                {
+                    <span class=""><span id="productPrice">@Model.Price.ToString("##,###")</span> تومان</span>
+                }
+            </span>
+            <p style="text-align:justify">
+                @Model.Product.Title
+                @{
+                    string[] descParts = { };
+                    try
+                    {
+                        descParts = Model.Product.ShortDescription.Split('\n');
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                <ul class="product-des-ul mb-40">
+                    @foreach (var desc in descParts)
+                    {
+                        <li>@desc</li>
+                    }
+                </ul>
+            </p>
+            <div class="row margin-top-1x pt-3 pb-3 mb-3"
+                 style="background-color:#e6e6e6;border: solid 1px #dad9d9;">
+
+                @{
+                    var featureName = Model.ProductMainFeatures.FirstOrDefault().FeatureId != StaticVariables.ColorCodeFeatureId ? Model.ProductMainFeatures.FirstOrDefault().Feature.Title : "رنگ";
+                    var i = 0;
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="size">@featureName</label>
+                            <select class="form-control" id="sel-feature" onchange="MediatorUpdateProductPrice(this, @Model.Product.Id)">
+                                @foreach (var item in Model.ProductMainFeatures)
+                                {
+                                    <option @(i == 1 ? "selected='selected'" : null) value="@item.Id">
+                                        @if (item.FeatureId == StaticVariables.ColorCodeFeatureId)
+                                        {
+                                        }
+                                        else
+                                        {
+                                            @(item.SubFeature != null ? item.SubFeature.Value : item.Value)
+                                        }
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+            <div class="pt-1 mb-2"><span class="text-medium">SKU:</span> #21457832</div>
+            <div class="padding-bottom-1x mb-2">
+                <span class="text-medium">دسته بندی محصول :&nbsp;</span>
+                <a class="navi-link" href="#">@Model.Product.ProductGroup.Title</a>
+            </div>
+            <hr class="mb-3">
+            <div class="d-flex flex-wrap justify-content-between">
+                <div class="entry-share mt-2 mb-2">
+                    <span class="text-muted">اشتراک گذاری:</span>
+                    <div class="share-links">
+                        <a class="social-button shape-circle sb-facebook" href="#" data-toggle="tooltip"
+                           data-placement="top" title="فیسبوک"><i class="socicon-facebook"></i></a>
+                        <a class="social-button shape-circle sb-twitter" href="#" data-toggle="tooltip"
+                           data-placement="top" title="توییتر"><i class="socicon-twitter"></i></a>
+                        <a class="social-button shape-circle sb-instagram" href="#" data-toggle="tooltip"
+                           data-placement="top" title="اینستاگرام"><i class="socicon-instagram"></i></a>
+                        <a class="social-button shape-circle sb-google-plus" href="#" data-toggle="tooltip"
+                           data-placement="top" title="گوگل +"><i class="socicon-googleplus"></i></a>
+                    </div>
+                </div>
+                <div class="sp-buttons mt-2 mb-2">
+                    <button class="btn btn-outline-secondary btn-sm btn-wishlist" data-toggle="tooltip" 
+                            title="علاقه مندی" onclick="AddToWishList(@Model.Product.Id)">
+                        <i class="icon-heart"></i>
+                    </button>
+                    @if (Model.Price > 0 && Model.PriceAfterDiscount > 0)
+                    {
+                        <button class="btn btn-outline-primary btn-sm Add-btn" 
+                                cardId="0" onclick="AddToCart(@Model.Product.Id)">
+                            <i class="icon-bag"></i> افزودن به سبد
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-outline-primary btn-sm Add-btn" 
+                                cardId="0" disabled>
+                            <i class="icon-bag"></i> افزودن به سبد
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Product Tabs-->
+    <div class="row padding-top-2x mb-3">
+        <div class="col-lg-12 offset-lg-1">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#description" data-toggle="tab" role="tab">
+                        توضیحات
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#reviews" data-toggle="tab" role="tab">دیدگاه شما</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="description" role="tabpanel">
+
+                    @Html.Raw(Model.Product.Description)
+
+                </div>
+                <div class="tab-pane fade" id="reviews" role="tabpanel">
+
+                    @foreach (var comment in Model.ProductComments.Where(c => c.ParentId == null))
+                    {
+
+                        <!-- Review-->
+                        <div class="comment">
+                            <div class="comment-author-ava"><img src="/Files/UserAvatars/user-avatar.png" alt="Review author"></div>
+                            <div class="comment-body">
+                                <div class="comment-header d-flex flex-wrap justify-content-between">
+                                    <h4 class="comment-title">@comment.Name</h4>
+                                    <div class="mb-2">
+                                        <div class="rating-stars">
+                                            @{ int commentRate = comment.Rate == null ? 0 : (int)comment.Rate;}
+                                            @{ for (int cIndex = 0; cIndex < commentRate; cIndex++)
+                                                {
+                                                    <i class="icon-star filled"></i>
+                                                }
+                                                for (int cIndex = commentRate; cIndex < 5; cIndex++)
+                                                {
+                                                    <i class="icon-star"></i>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="comment-text text-right">
+                                    @comment.Message
+                                </p>
+                                <div class="comment-footer">
+                                    <span class="comment-meta">@comment.AddedDate</span>
+                                </div>
+                                <!-- Replay Review-->
+                                @foreach (var childComment in Model.ProductComments.Where(c => c.ParentId == comment.Id))
+                                {
+                                    <div class="comment margin-top-2x">
+                                        <div class="comment-author-ava">
+                                            <img src="/Files/UserAvatars/user-avatar.png" alt="Review author">
+                                        </div>
+                                        <div class="comment-body">
+                                            <div class="comment-header d-flex flex-wrap justify-content-between">
+                                                <h4 class="comment-title">@childComment.Name</h4>
+                                                <div class="mb-2">
+                                                    <div class="rating-stars">
+
+                                                        @{ commentRate = childComment.Rate == null ? 0 : (int)childComment.Rate;}
+                                                        @{ for (int crIndex = 0; crIndex < commentRate; crIndex++)
+                                                            {
+                                                                <i class="icon-star filled"></i>
+                                                            }
+                                                            for (int crIndex = commentRate; crIndex < 5; crIndex++)
+                                                            {
+                                                                <i class="icon-star"></i>
+                                                            }
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p class="comment-text text-right">
+                                                @childComment.Message
+                                            </p>
+                                            <div class="comment-footer">
+                                                <span class="comment-meta">@childComment.AddedDate</span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+
+
+                            </div>
+                        </div>
+
+                    }
+
+
+                    <!-- Review Form-->
+                    <h5 class="mb-30 padding-top-1x text-right">افزودن دیدگاه جدید</h5>
+                    @using (Html.BeginForm("PostComment", "Shop", FormMethod.Post, new { id = "commentform" }))
+                    {
+                        <input type="hidden" id="ProductId" name="ProductId" value="@Model.Product.Id">
+                        <input type="hidden" id="ParentId" name="ParentId" value="">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group text-right">
+                                    <label for="review_name">نام شما:</label>
+                                    <input type="text" name="Name" id="Name" class="form-control form-control-rounded" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group text-right">
+                                    <label for="review_email">آدرس ایمیل:</label>
+                                    <input class="form-control form-control-rounded" type="email" name="Email" id="Email"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group text-right">
+                                    <label for="review_rating">امتیاز:</label>
+                                    <select class="form-control form-control-rounded" name="Rate" id="Rate">
+                                        <option value="5">5 ستاره</option>
+                                        <option value="4">4 ستاره</option>
+                                        <option value="3">3 ستاره</option>
+                                        <option value="2">2 ستاره</option>
+                                        <option value="1">1 ستاره</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group text-right">
+                                    <label for="review_text">متن دیدگاه:</label>
+                                    <textarea class="form-control form-control-rounded" name="Message" id="Message" rows="8"
+                                              required></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12 text-right">
+                                <button class="btn btn-outline-primary" type="submit">ارسال دیدگاه</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @Html.Action("RelatedProductsSection", "Shop", new { productId = Model.Product.Id, take = 8 })
+
+
+
+</div>
+
+
+
+
+<style>
+    .my-error-class {
+        color: darkred !important; /* red */
+    }
+</style>
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('#glasscase').glassCase({
+                'thumbsPosition': 'bottom',
+                'widthDisplayPerc': 100,
+                isDownloadEnabled: false,
+                zoomPosition: 'left'
+            });
+        });
+        function UpdateProductPrice(productId, mainFeatureId) {
+            $.ajax({
+                type: 'GET',
+                url: '/Shop/GetProductPrice?productId=' + productId + '&mainFeatureId=' + mainFeatureId,
+                success: function (data) {
+                    var obj = JSON.parse(data);
+                    $("#productPrice").html(obj.price);
+                    $("#mainFeatureId").val(mainFeatureId);
+                    $("#productPriceAfterDiscount").html(obj.priceAfterDiscount);
+                },
+                error: function (data) {
+                    console.log("error");
+                    console.log(data);
+                },
+                complete: function () {
+                }
+            });
+        }
+        function MediatorUpdateProductPrice(target, productId) {
+            var featureId = target.options[target.selectedIndex].value;
+            UpdateProductPrice(productId, featureId);
+        }
+    </script>
+    <script>
+        $("#commentform").validate({
+            errorClass: "my-error-class",
+            rules: {
+                Name: "required",
+                Message: "required",
+                Email: {
+                    required: true,
+                    email: true
+                }
+            },
+            messages: {
+                Name: "نام خود را وارد کنید",
+                Message: "پیام خود را وارد کنید",
+                Email: {
+                    required: "ایمیل خود را وارد کنید",
+                    email: "ایمیل وارد شده معتبر نیست"
+                },
+            }
+        });
+    </script>
+    <script>
+        function AnswerComment(parentId, parentName) {
+            $('#answerPerson').html("در حال پاسخ دادن به  " +
+                parentName +
+                "<a class='reply-btn btn btn-color small' style='margin-right:10px;cursor:pointer' onclick='removePerson()'>حذف</a>");
+            $('#ParentId').val(parentId);
+        }
+
+        function removePerson() {
+            $('#answerPerson').html("");
+            $('#ParentId').val("");
+        }
+    </script>
+}
+

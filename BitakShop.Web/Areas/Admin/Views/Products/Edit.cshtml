@@ -1,0 +1,566 @@
+﻿@using BitakShop.Core.Models
+@using BitakShop.Infrastructure.Helpers;
+@model BitakShop.Core.Models.Product
+
+@{
+    ViewBag.Title = "محصولات";
+    var ProductGroups = ViewBag.ProductGroups as List<ProductGroup>;
+}
+<link href="/Content/admin/plugins/custom/jstree/jstree.bundle.css" rel="stylesheet" type="text/css" />
+<input type="hidden" id="nav_active" value="product_control">
+<input type="hidden" id="nav_item_active" value="products">
+@{
+    if (ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">
+            <strong>خطا!</strong> @ViewBag.Message
+        </div>
+    }
+}
+<div class="col-lg-12">
+    <div class="card card-custom gutter-b">
+        <div class="card-header">
+            <h3 class="card-title">
+                افزودن محصول
+            </h3>
+        </div>
+        @using (Html.BeginForm("Edit", "Products", FormMethod.Post, new { id = "form", enctype = "multipart/form-data" }))
+        {
+
+            <div class="card-body">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <input type="hidden" name="ProductId" id="ProductId" value="@Model.Id" />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ShortTitle, new { })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ShortTitle, new { htmlAttributes = new { @class = "form-control " } })
+                                @Html.ValidationMessageFor(model => model.ShortTitle, "", new { @class = "form-text text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, new {})
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Title, new {htmlAttributes = new {@class = "form-control "}})
+                                @Html.ValidationMessageFor(model => model.Title, "", new {@class = "form-text text-danger"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ShortDescription, new {})
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.ShortDescription, new {htmlAttributes = new {@class = "form-control "}})
+                                @Html.ValidationMessageFor(model => model.ShortDescription, "", new {@class = "form-text text-danger"})
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-label">تصویر</label>
+                            <div class="col-lg-6 col-md-12 col-sm-12">
+                                <div class="image-input image-input-outline" id="product-image">
+                                    <div class="image-input-wrapper" style="background-image: url(/Files/ProductImages/Thumb/@Model.Image)"></div>
+
+                                    <label class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="change" data-toggle="tooltip" title="" data-original-title="آپلود تصویر">
+                                        <i class="fa fa-pen icon-sm text-muted"></i>
+                                        <input type="file" name="ProductImage" id="ProductImage" accept=".png, .jpg, .jpeg"/>
+                                        <input type="hidden" name="product_image_remove"/>
+                                    </label>
+
+                                    <span class="btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow" data-action="cancel" data-toggle="tooltip" title="حذف تصویر">
+                                        <i class="ki ki-bold-close icon-xs text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Rate, new {})
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Rate, new {htmlAttributes = new {@class = "form-control "}})
+                                @Html.ValidationMessageFor(model => model.Rate, "", new {@class = "form-text text-danger"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, new { })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control " } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "form-text text-danger" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="">انتخاب گروه</label>
+                            <div class="col-lg-4 col-md-9 col-sm-12">
+                                <div id="ParentGroupId" class="tree-demo">
+                                    <ul>
+                                        @foreach (var group in ProductGroups.Where(p => p.ParentId == null))
+                                        {
+                                            var result = HierarchyLoop.GetProductGroupHierarchy(group, Model.ProductGroupId);
+                                            @Html.Raw(result)
+                                        }
+                                    </ul>
+                                </div>
+                                <span class="text-danger" style="display: none;color:darkred" id="validate_product_group">لطفا یک گروه را انتخاب کنید</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="">انتخاب برند</label>
+                            <div class="col-md-10">
+                                <select class="form-control" id="Brands" name="Brands">
+                                    <option value="">لطفا یک گروه را انتخاب کنید</option>
+                                </select>
+                            </div>
+                            <span class="text-danger" style="display: none" id="validate_brand">لطفا یک برند را انتخاب کنید</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="">ویژگی های محصول</label>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div id="productGroupFeatures">لطفا گروه محصول را انتخاب کنید</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Index")" class="btn btn-secondary">انصراف</a>
+                <input type="submit" value="ثبت" class="btn btn-primary mr-2" />
+            </div>
+        }
+    </div>
+</div>
+<style>
+    .image-input .image-input-wrapper {
+        width: 200px;
+    }
+</style>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Content/admin/plugins/custom/jstree/jstree.bundle.js"></script>
+    <script src="/Content/admin/js/pages/features/miscellaneous/treeview.js"></script>
+    <!--end::Page Scripts-->
+    <script src="/ckeditor/ckeditor.js"></script>
+    <script src="/ckeditor/adapters/jquery.js"></script>
+    <script>
+        function getFeatureInput(el, subFeatureId) {
+            var switchBtn = $(el);
+            var name = switchBtn.attr("name"); // feature_1[0][existingFeature]
+            // getting feature id & index
+            var splitName = name.split('_'); // [feature,1[0][existingFeature]]
+            var secondSplit = splitName[1].split('['); // ["1", "0]", "existingSubFeature]", "]"]
+
+            // getting feature id
+            var idStr = secondSplit[0];
+            var featureId = parseInt(idStr);
+            // getting index
+            var index = secondSplit[1].split(']')[0];
+            // feature input container
+            var featureDetailContainer = $("[name='feature_" + idStr + "[" + index + "][featureDetailContainer]']");
+
+            if (switchBtn.prop("checked") === true) {
+                var optionsStr = "";
+                $.ajax({
+                    type: 'GET',
+                    url: '/Admin/Products/GetFeatureSubFeatures/' + featureId,
+                    async: false,
+                    success: function (data) {
+                        data.map(function (item) {
+                            if (subFeatureId != null && item.Id === subFeatureId) {
+                                var option = "<option selected value='" + item.Id + "'>" + item.Value + "</option>";
+                            } else {
+                                var option = "<option value='" + item.Id + "'>" + item.Value + "</option>";
+                            }
+                            optionsStr = optionsStr + option;
+                        });
+                    },
+                    error: function (data) {
+                        console.log("error");
+                        console.log(data);
+                    }
+                });
+                featureDetailContainer.html('<select class="form-control" name="feature_' +
+                    idStr +
+                    '[' +
+                    index +
+                    '][featureDetail]">' +
+                    optionsStr +
+                    '</select>');
+            } else {
+                featureDetailContainer.html('<input type="text" name="feature_' +
+                    idStr +
+                    '[' +
+                    index +
+                    '][featureDetail]" class="form-control" placeholder="جزییات را وارد کنید">');
+            }
+        }
+
+        $(function () {
+            $('#Description').ckeditor();
+
+        });
+        $("#ParentGroupId").jstree({
+            "core": {
+                "themes": {
+                    "responsive": false
+                }
+            },
+            "types": {
+                "default": {
+                    "icon": "fa fa-box"
+                }
+            },
+            "plugins": ["types"]
+        });
+        $('#ParentGroupId').on('select_node.jstree',
+            function (e, data) {
+                var selectedGroupArr = data.node.id.split('_'); // ["pg","id"]
+                var productGroupId = parseInt(selectedGroupArr[1]); // id
+                getProductGroupFeatures(productGroupId);
+                getProductGroupBrands(productGroupId);
+            });
+        new KTImageInput('product-image');
+    </script>
+    <script>
+        function getProductGroupBrands(productGroupId, selectedBrandId) {
+            var optionsStr = "";
+            $.ajax({
+                type: 'GET',
+                url: '/Admin/Products/GetProductGroupBrands/' + productGroupId,
+                async: false,
+                success: function(data) {
+                    data.map(function(item) {
+                        if (selectedBrandId != null && item.Id === selectedBrandId) {
+                            var option = "<option value='" + item.Id + "' selected>" + item.Name + "</option>";
+                        } else {
+                            var option = "<option value='" + item.Id + "'>" + item.Name + "</option>";
+                        }
+                        optionsStr = optionsStr + option;
+                    });
+                },
+                error: function(data) {
+                    console.log("error");
+                    console.log(data);
+                }
+            });
+            $('#Brands').html(optionsStr);
+        }
+
+        function getProductGroupFeatures(productGroupId) {
+            $.ajax({
+                type: 'GET',
+                url: "/Admin/Products/GetProductGroupFeatures/" + productGroupId,
+                async: false,
+                success: function(data) {
+                    $("#productGroupFeatures").empty();
+                    data.map(function(item, index) {
+                        var mainFeature = "";
+                        if (item.Id === @Model.ProductMainFeatures.FirstOrDefault().FeatureId) {
+                            mainFeature = "checked='checked'";
+                        }
+                        var feature = '<div id="feature_' +
+                            item.Id +
+                            '_repeater">' +
+                            '<div class="form-group row" id="feature_' +
+                            item.Id +
+                            '_repeater">' +
+                            '<label class="col-lg-4 col-form-label text-left"><a href="javascript:;" class="btn btn-icon btn-circle btn-sm btn-success mr-2" data-repeater-create=""><i class="la la-plus"></i></a>' +
+                            item.Title +
+                            '</label>' +
+                            '<label class="radio radio-lg"><input type="radio" onchange="setMainFeatureFields(this) " id="isMain_' +
+                            item.Id +
+                            '" ' +
+                            mainFeature +
+                            ' name="MainFeature"/><span style="margin-left:10px"></span>ویژگی اصلی</label>' +
+                            '<div data-repeater-list="feature_' +
+                            item.Id +
+                            '" class="col-lg-10">' +
+                            '<div data-repeater-item class="">' +
+                            '<div class="form-group row" style="align-items: center">' +
+                            '<label class="col-md-4">جزییات ویژگی موجود</label>' +
+                            '<div class="col-md-3">' +
+                            '<span class="switch">' +
+                            '<label>' +
+                            '<input type="checkbox" onclick="getFeatureInput(this)" name="existingSubFeature"/>' +
+                            '<span></span>' +
+                            '</label>' +
+                            '</span>' +
+                            '</div>' +
+                            '<div class="col-md-2">' +
+                            '<a href="javascript:;" data-repeater-delete="" class="btn btn-sm btn-icon btn-circle btn-light-danger">' +
+                            '<i class="la la-trash"></i>' +
+                            '</a>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="form-group row">' +
+                            '<label class="col-md-2 col-form-label text-left">جزییات :</label>' +
+                            '<div class="col-lg-8" name="featureDetailContainer">' +
+                            '<input type="text" name="featureDetail" class="form-control" placeholder="مقدار را وارد کنید">' +
+                            '</div>' +
+                            '</div>' +
+                            '<div style="display:none" name="mainFeatureFields_' +
+                            item.Id +
+                            '">' +
+                            '<div class="form-group row">' +
+                            '<label class="col-md-2 col-form-label text-left">تعداد :</label>' +
+                            '<div class="col-lg-8">' +
+                            '<input type="number" name="Quantity" class="form-control" placeholder="تعداد را وارد کنید">' +
+                            '<span name="QuantityValidate" class="text-danger" style="display:none">لطفا تعداد را وارد کنید</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '<div class="form-group row">' +
+                            '<label class="col-md-2 col-form-label text-left">قیمت :</label>' +
+                            '<div class="col-lg-8">' +
+                            '<input type="number" name="Price" class="form-control" placeholder="قیمت را وارد کنید">' +
+                            '<span name="PriceValidate" class="text-danger" style="display:none">لطفا قیمت را وارد کنید</span>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '<script>$("#feature_' +
+                            item.Id +
+                            '_repeater").repeater({initEmpty: true,show: function () {' +
+                            'if($(\'#isMain_' +
+                            item.Id +
+                            '\').prop("checked"))' +
+                            '{$("[name*=\'mainFeatureFields_' +
+                            item.Id +
+                            '\']").show()}' +
+                            'else {$("[name*=\'mainFeatureFields_' +
+                            item.Id +
+                            '\']").hide()}' +
+                            '$(this).slideDown();' +
+                            '},' +
+                            'hide: function (deleteElement) {var currentInstance = $(this).index();var nextInstance = $(this).index() + 1;' +
+                            '$(this).slideUp(deleteElement);}});' +
+                            "<\/script>";
+                        $("#productGroupFeatures").append(feature);
+                    });
+                },
+                error: function(data) {
+                    console.log("error");
+                    console.log(data);
+                }
+            });
+        }
+
+        function setMainFeatureFields(el) {
+            var selectedItem = $(el).attr('id');
+            var selectedFeatureId = selectedItem.split('_')[1];
+            var mainFeatureField = $("[name*='mainFeatureFields_" + selectedFeatureId + "']");
+            mainFeatureField.show();
+            $("[name='MainFeature']").not(":checked").each(function() {
+                var notSelected = $(this).attr('id');
+                var notSelectedFeatureId = notSelected.split('_')[1];
+                var mainFeatureField = $("[name*='mainFeatureFields_" + notSelectedFeatureId + "']");
+                mainFeatureField.hide();
+            });
+            var mainFeatureField = $("[name*='mainFeatureFields_" + featureId + "']");
+            mainFeatureField.show();
+        }
+    </script>
+    <script>
+        $("#form").submit(function (e) {
+            e.preventDefault();
+            if ($("#form").valid()) {
+                var ProductId = $("#ProductId").val();
+                var Title = $("#Title").val();
+                var ShortDescription = $("#ShortDescription").val();
+                var Brand = $("#Brands option:selected").val();
+                var Description = $("#Description").val();
+                var desc2 = escape(Description);
+                var Rate = $("#Rate").val();
+                var ShortTitle = $("#ShortTitle").val();
+
+                var selectedGroup = $("#ParentGroupId").jstree().get_selected()[0]; // ["pg_id"]
+                if (selectedGroup == undefined) {
+                    $("#validate_product_group").show();
+                } else {
+                    $("#validate_product_group").hide();
+                    var selectedGroupArr = selectedGroup.split('_'); // ["pg","id"]
+                    var ProductGroup = parseInt(selectedGroupArr[1]); // id
+                }
+
+                var ProductFeatures = [];
+                var featureValidation = false;
+                if ($("[name*='[featureDetail]']").length >= 0) {
+                    $("[name*='[featureDetail]']").each(function () {
+                        if ($(this).val() != null && $(this).val() != undefined && $(this).val() !== "") {
+                            var feature = {
+                                FeatureId: null,
+                                SubFeatureId: null,
+                                Value: null,
+                                IsMain: false,
+                                Quantity: null,
+                                Price: null
+                            };
+                            var name = $(this).attr("name"); // feature_2[0][featureDetail]
+                            var featureId = parseInt(name.split('_')[1].split('[')[0]);
+                            var index = name.split('_')[1].split('[')[1].split(']')[0];
+                            feature.FeatureId = featureId;
+                            if ($(this).is("input")) {
+                                feature.Value = $(this).val();
+                            } else {
+                                feature.SubFeatureId = parseInt($(this).val());
+                            }
+                            var isMain = $("#isMain_" + featureId).prop("checked");
+                            if (isMain) {
+                                feature.IsMain = true;
+                                var quantity = $("[name='feature_" + featureId + "[" + index + "][Quantity]']").val();
+                                var validateQuantity =
+                                    $("[name='feature_" + featureId + "[" + index + "][QuantityValidate]']");
+                                var price = $("[name='feature_" + featureId + "[" + index + "][Price]']").val();
+                                var validatePrice =
+                                    $("[name='feature_" + featureId + "[" + index + "][PriceValidate]']");
+                                if (quantity == null || quantity.length === 0 || price === null || price.length === 0) {
+                                    if (quantity == null || quantity.length === 0) {
+                                        validateQuantity.show();
+                                        featureValidation = false;
+                                    }
+                                    if (price === null || price.length === 0) {
+                                        validatePrice.show();
+                                        featureValidation = false;
+                                    }
+                                } else {
+                                    validateQuantity.hide();
+                                    validatePrice.hide();
+                                    feature.Quantity = parseInt(quantity);
+                                    feature.Price = parseInt(price);
+                                    featureValidation = true;
+                                }
+                            }
+                            ProductFeatures.push(feature);
+                        }
+                    });
+
+                }
+                $("#validate_brand").hide();
+                $("#validate_feature").hide();
+                if (Brand === null || Brand == undefined || ProductFeatures.length <= 0) {
+                    if (Brand === null || Brand == undefined) {
+                        $("#validate_brand").show();
+                    }
+                    if (ProductFeatures.length <= 0) {
+                        $("#validate_feature").show();
+                    }
+                } else if (featureValidation === true) {
+                    $("#validate_brand").hide();
+                    $("#validate_feature").hide();
+                    var ProductImage = $('#ProductImage').get(0).files[0];
+                    var product = {
+                        ProductId: ProductId,
+                        Title: Title,
+                        ShortTitle: ShortTitle,
+                        ShortDescription: ShortDescription,
+                        Brand: Brand,
+                        Description: desc2,
+                        Rate: Rate,
+                        ProductGroup: ProductGroup,
+                        ProductFeatures: ProductFeatures
+                    }
+                    $.post($("#form").attr('action'),
+                        product,
+                        function (id) {
+                            var formData = new FormData();
+                            formData.append('File', ProductImage);
+                            $.ajax({
+                                type: 'POST',
+                                url: "/Products/UploadImage/" + id,
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    console.log("success");
+                                    location.href = "/Admin/Products";
+                                },
+                                error: function (data) {
+                                    console.log("error");
+                                    console.log(data);
+                                }
+                            });
+                        });
+                };
+            }
+        });
+    </script>
+    <script>
+        function setProductFeatures(id) {
+            var productFeatures = [];
+            $.ajax({
+                type: 'GET',
+                url: "/Products/GetProductFeatures/" + id,
+                async: false,
+                success: function(data) {
+                    console.log("success");
+                    data.map(function(item) {
+                        productFeatures.push(item);
+                    });
+                },
+                error: function(data) {
+                    console.log("error");
+                    console.log(data);
+                }
+            });
+            productFeatures.map(function(item) {
+
+                var featureContainer = $("[data-repeater-list=feature_" + item[0].FeatureId + "]");
+                item.map(function (productFeature, index) {
+                    var mainFeature = "display:none";
+                    if (productFeature.IsMain === true) {
+                        mainFeature = "";
+                    }
+                    var featureDetail = "";
+                    featureDetail +=
+                        '<div data-repeater-item="" class="" style="">' +
+                        '<div class="form-group row" style="align-items: center">' +
+                        '<label class="col-md-4">جزییات ویژگی موجود</label>' +
+                        '<div class="col-md-3"><span class="switch">' +
+                        '<label><input type="checkbox" onclick="getFeatureInput(this,'+productFeature.SubFeatureId+')" name="feature_'+productFeature.FeatureId+'['+index+'][existingSubFeature][]"><span></span></label>' +
+                        '</span></div>' +
+                        '<div class="col-md-2">' +
+                        '<a href="javascript:;" data-repeater-delete="" class="btn btn-sm btn-icon btn-circle btn-light-danger"><i class="la la-trash"></i></a>' +
+                        '</div></div>'+
+                        '<div class="form-group row"><label class="col-md-2 col-form-label text-left">جزییات :</label>' +
+                        '<div class="col-lg-8" name="feature_' + productFeature.FeatureId + '[' + index +'][featureDetailContainer]">' +
+                        '<input type="text" name="feature_' + productFeature.FeatureId + '[' + index +'][featureDetail]" value="'+productFeature.Value+'" class="form-control" placeholder="مقدار را وارد کنید"></div></div>' +
+                        '<div style="' + mainFeature +'" name="feature_' + productFeature.FeatureId + '[' + index + '][mainFeatureFields_' + productFeature.FeatureId + ']"><div class="form-group row">' +
+                        '<label class="col-md-2 col-form-label text-left">تعداد :</label><div class="col-lg-8">' +
+                        '<input type="number" name="feature_' + productFeature.FeatureId + '[' + index + '][Quantity]" value="' + productFeature.Quantity +'" class="form-control" placeholder="تعداد را وارد کنید">' +
+                        '<span name="feature_' + productFeature.FeatureId + '[' + index +'][QuantityValidate]" class="text-danger" style="display:none">لطفا تعداد را وارد کنید</span>' +
+                        '</div></div>' +
+                        '<div class="form-group row"><label class="col-md-2 col-form-label text-left">قیمت :</label>' +
+                        '<div class="col-lg-8">' +
+                        '<input type="number" name="feature_' + productFeature.FeatureId + '[' + index + '][Price]" value="' + productFeature.Price +'" class="form-control" placeholder="قیمت را وارد کنید">' +
+                        '<span name="feature_' + productFeature.FeatureId + '[' + index +'][PriceValidate]" class="text-danger" style="display:none">لطفا قیمت را وارد کنید</span>' +
+                        '</div></div></div></div>';
+                    if (productFeature.SubFeatureId != null) {
+                        featureDetail += '<script>$("[name=\'feature_' +
+                            productFeature.FeatureId +
+                            '[' +
+                            index +
+                            '][existingSubFeature][]\']").click()<\/script>';
+                    }
+
+                    featureContainer.append(featureDetail);
+                });
+            });
+        }
+
+        function InitializeFields() {
+            var currentBrandId = @Model.BrandId;
+            getProductGroupBrands(@Model.ProductGroupId, currentBrandId);
+            getProductGroupFeatures(@Model.ProductGroupId);
+            setProductFeatures(@Model.Id);
+        }
+
+        $(document).ready(function() {
+            InitializeFields();
+        });
+    </script>
+
+}

@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewBag.Title = "روش پرداخت";
+}
+
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>پرداخت نهایی</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>
+                    <a href="/Shop/Checkout/?invoiceNumber=@ViewBag.InvoiceNumber">سبد خرید</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>پرداخت نهایی</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Page Content-->
+<div class="container padding-bottom-3x mb-2">
+    <div class="row">
+        <!-- Checkout Adress-->
+        <div class="col-xl-9 col-lg-8 bg-white pt-3 pb-3 soft-shadow text-right">
+            <div class="checkout-steps">
+                <a>1. آدرس مشتری</a>
+                <a class="active"><span class="angle"></span>2. نحوه پرداخت</a>
+                <a><span class="angle"></span>3. بازبینی</a>
+            </div>
+            <h5 class="text-right mb-4">انتخاب درگاه اینترنتی</h5>
+            <hr class="padding-bottom-2x">
+            <form method="post" action="/Shop/ConfirmOrder/?invoiceNumber=@ViewBag.InvoiceNumber">
+
+                <div class="accordion" id="accordion" role="tablist">
+                    <div class="card">
+                        <div class="card-header" role="tab">
+                            <h6><a href="#card" data-toggle="collapse" data-parent="#accordion"> <i class="icon-columns"></i>&nbsp; درگاه های اینترنتی پرداخت</a></h6>
+                        </div>
+                        <div class="collapse show" id="card" role="tabpanel">
+                            <div class="card-body">
+                                <div class="card-wrapper"></div>
+
+                                <div class="bank-gateway-item active-bank-gateway">
+                                    <label for="rdo_sepehr"><img src="~/Content/client/images/sepehr.png" class="bank-gateway-image"></label>
+                                    <input type="radio" name="rdoBankGateway" id="rdo_sepehr" value="1" checked="checked">
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+                <div class="checkout-footer">
+                    <div class="column text-right"><a class="btn btn-outline-secondary" href="/Shop/CheckoutAddress/?invoiceNumber=@ViewBag.InvoiceNumber"><i class="icon-arrow-right"></i><span class="hidden-xs-down">&nbsp;برگشت </span></a></div>
+                    <div class="column text-left"><button class="btn btn-primary"><span class="hidden-xs-down">ادامه &nbsp;</span><i class="icon-arrow-left"></i></button></div>
+                </div>
+
+            </form>
+        </div>
+        <!-- Sidebar          -->
+        <aside class="col-md-3 col-sm-4 order-lg-1" style="padding-left:7px">
+            @if (ViewBag.SidebarImages != null)
+            {
+                if (!string.IsNullOrEmpty(ViewBag.SidebarImages[1].Image))
+                {
+                    <section class="alert alert-no-padding alert-image-bg alert-dismissible fade show text-center mb-2 soft-shadow" data-dismiss="alert">
+                        <span></span>
+                        <img src="~/Files/StaticContentImages/Image/@ViewBag.SidebarImages[1].Image" />
+                    </section>
+                }
+
+            }
+            <!-- Product Widgets-->
+            <!-- Latest Product Section Start -->
+            @Html.Action("LatestProductsSection", "Home", new { take = 8 })
+            <!-- Latest Product Section End -->
+
+        </aside>
+    </div>
+</div>
+
+
+
+
+

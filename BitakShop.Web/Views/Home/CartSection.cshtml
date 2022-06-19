@@ -1,0 +1,34 @@
+﻿@model BitakShop.Web.ViewModels.CartModel
+
+@if (Model.CartItems != null && Model.CartItems.Any())
+{
+    <a href="/Shop/Cart"></a><i class="icon-bag"></i><span class="count">@Model.CartItems.Count</span><span class="subtotal">@Model.TotalPrice.ToString("##,###") تومان</span>
+    <div class="toolbar-dropdown">
+
+        @foreach (var item in Model.CartItems)
+        {
+            <div class="dropdown-product-item"><span class="dropdown-product-remove" onclick="RemoveFromCart(@item.Id,@item.MainFeatureId, 'true')"><i class="icon-cross"></i></span><a class="dropdown-product-thumb" href="/Shop/Product/@item.Id"><img src="~/Files/ProductImages/Thumb/@item.Image" alt="Product"></a>
+                <div class="dropdown-product-info"><a class="dropdown-product-title" href="/Shop/Product/@item.Id">@item.ProductName <small>(@item.Quantity)</small></a><span class="dropdown-product-details">@item.Price.ToString("##,###") تومان</span></div>
+            </div>
+        }
+
+        <div class="toolbar-dropdown-group">
+            <!--<div class="column"><a class="btn btn-sm btn-block btn-secondary" href="/Shop/Cart"></a></div>-->
+            <div class="column"><a class="btn btn-sm btn-block btn-success" href="/Shop/Checkout">نمایش سبد / تسویه</a></div>
+        </div>
+    </div>
+}
+else
+{
+    <a href = "/Shop/Cart" ></a ><i class="icon-bag"></i><span class="count">0</span>
+    <div class="toolbar-dropdown">
+
+        <div class="toolbar-dropdown-group">
+            <!--<div class="column"><a class="btn btn-sm btn-block btn-secondary" href="/Shop/Cart"></a></div>-->
+            <div class="column"><a class="btn btn-sm btn-block btn-secondary">سبد خالی است!</a></div>
+        </div>
+    </div>
+}
+
+
+

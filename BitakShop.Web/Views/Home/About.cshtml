@@ -1,0 +1,57 @@
+﻿@model BitakShop.Core.Models.StaticContentDetail
+
+<!-- Page Title-->
+<div class="page-title">
+    <div class="container">
+        <div class="column">
+            <h1>درباره ما</h1>
+        </div>
+        <div class="column">
+            <ul class="breadcrumbs">
+                <li>
+                    <a href="/">خانه</a>
+                </li>
+                <li class="separator">&nbsp;</li>
+                <li>درباره ما</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-- Page Content-->
+<div class="container padding-bottom-2x padding-top-2x mb-2 ">
+
+
+    @Html.Raw(Model.Description)
+
+
+    @{ 
+        var teamMembers = ViewBag.TeamMembers as List<BitakShop.Core.Models.TeamMember>;
+    }
+
+    @if (teamMembers != null)
+    {
+        <div class="text-center padding-top-3x mb-30">
+            <h2>معرفی تیم بی تک شاپ</h2>
+            <p class="text-muted">با افراد تیم آشنا شوید</p>
+        </div>
+        <div class="row">
+            @foreach (var item in teamMembers)
+            {
+                <div class="col-md-3 col-sm-6 mb-30 text-center">
+                    <img class="d-block w-150 mx-auto img-thumbnail rounded-circle mb-2" src="~/Files/TeamMembersImages/@item.Image" alt="@item.Name">
+                    <h6>@item.Name</h6>
+                    <p class="text-muted mb-2">@item.JobTitle</p>
+                    <div class="social-bar">
+                        <a class="social-button shape-circle sb-facebook" href="@item.TelegramChannel" data-toggle="tooltip" data-placement="top" title="Telegram"><i class="socicon-telegram"></i></a>
+                        <a class="social-button shape-circle sb-twitter" href="@item.TwitterPage" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="socicon-twitter"></i></a>
+                        <a class="social-button shape-circle sb-instagram" href="@item.InstagramPage" data-toggle="tooltip" data-placement="top" title="Instagram"><i class="socicon-instagram"></i></a>
+                        <a class="social-button shape-circle sb-youtube" href="@item.YoutubePage" data-toggle="tooltip" data-placement="top" title="Youtube"><i class="socicon-youtube"></i></a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+

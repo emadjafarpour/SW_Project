@@ -1,0 +1,56 @@
+﻿@model List<BitakShop.Infratructure.Dtos.Product.ProductWithPriceDto>
+
+<!-- Related Products Carousel-->
+<!-- Carousel-->
+<!-- Featured Products Carousel Slider -->
+<section class=" pr-2 pl-2 pt-2 pb-2 rounded-5 soft-shadow mb-2" style="background:#fff">
+    <h6 class="text-right border-title mb-3">محصولاتی که ممکن است شما بپسندید</h6>
+    <div class="owl-carousel"
+         data-owl-carousel="{ &quot;nav&quot;: true, &quot;dots&quot;: true, &quot;margin&quot;: 10, &quot;responsive&quot;: {&quot;0&quot;:{&quot;items&quot;:1},&quot;576&quot;:{&quot;items&quot;:2},&quot;768&quot;:{&quot;items&quot;:3},&quot;991&quot;:{&quot;items&quot;:4},&quot;1200&quot;:{&quot;items&quot;:4}},&quot;autoplay&quot;: true, &quot;autoplayTimeout&quot;: 4000 ,&quot;loop&quot;: true }">
+        @foreach (var item in Model)
+        {
+            <!-- Product-->
+            <div class="grid-item">
+                <div class="product-card">
+                    <div class="product-badge text-danger">22%</div>
+                    <a class="product-thumb mt-3" href="/Shop/Product/@item.Id">
+                        <img src="/Files/ProductImages/Thumb/@item.Image" alt="@item.ShortTitle">
+                    </a>
+                    <h3 class="product-title"><a href="/Shop/Product/@item.Id">@item.ShortTitle</a></h3>
+                    <h4 class="product-price">
+                        @if (item.PriceAfterDiscount < item.Price)
+                        {
+                            <span class="price">@item.PriceAfterDiscount.ToString("##,###") تومان</span>
+                            <del class="price old-price">@item.Price.ToString("##,###") تومان</del>
+                        }
+                        else
+                        {
+                            <span class="price">@item.Price.ToString("##,###") تومان</span>
+                        }
+                    </h4>
+                    <div class="product-buttons">
+                        <button class="btn btn-outline-secondary btn-sm btn-wishlist" data-toggle="tooltip"
+                                title="علاقه مندی" onclick="AddToWishList(@item.Id)">
+                            <i class="icon-heart"></i>
+                        </button>
+                        @if (item.Price > 0 && item.PriceAfterDiscount > 0)
+                        {
+                            <button class="btn btn-outline-primary btn-sm" onclick="AddToCart(@item.Id)">
+                                افزودن
+                                به سبد
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-primary btn-sm" data-toast data-toast-type="warning"
+                                    data-toast-position="topRight" data-toast-icon="icon-circle-check"
+                                    data-toast-title=" محصول " data-toast-message="عدم موجودی">
+                                عدم موجودی
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
